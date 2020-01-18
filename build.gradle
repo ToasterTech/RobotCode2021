@@ -1,6 +1,8 @@
 plugins {
     id "java"
     id "edu.wpi.first.GradleRIO" version "2020.1.2"
+    //Checkstyle plugin
+    id 'checkstyle'
 }
 
 sourceCompatibility = JavaVersion.VERSION_11
@@ -37,6 +39,11 @@ deploy {
     }
 }
 
+checkstyle {
+  maxWarnings = 0
+}
+
+
 // Set this to true to enable desktop support.
 def includeDesktopSupport = false
 
@@ -58,6 +65,13 @@ dependencies {
     // upon debugging
     simulation wpi.deps.sim.gui(wpi.platforms.desktop, false)
 }
+
+// Use local maven if exists else use central
+repositories {
+  mavenLocal()
+  mavenCentral()
+}
+
 
 // Setting up my Jar File. In this case, adding all libraries into the main jar ('fat jar')
 // in order to make them all available at runtime. Also adding the manifest so WPILib
