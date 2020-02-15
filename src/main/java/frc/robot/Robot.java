@@ -8,6 +8,11 @@
 package frc.robot;
 
 import edu.wpi.first.wpilibj.TimedRobot;
+import frc.robot.devices.commands.DeviceOutputCommand;
+import frc.robot.subsystem.drive.DriveSubsystem;
+import frc.robot.subsystem.drive.models.DifferentialDriveModel;
+import java.util.List;
+
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -17,12 +22,17 @@ import edu.wpi.first.wpilibj.TimedRobot;
  * project.
  */
 public class Robot extends TimedRobot {
+  private DriveSubsystem driveSubsystem;
+  private HardwareInterface hardwareInterface;
+
   /**
    * This function is run when the robot is first started up and should be used
    * for any initialization code.
    */
   @Override
   public void robotInit() {
+    this.driveSubsystem = new DriveSubsystem();
+    this.hardwareInterface = new HardwareInterface();
   }
 
   @Override
@@ -35,10 +45,13 @@ public class Robot extends TimedRobot {
 
   @Override
   public void teleopInit() {
+    
   }
 
   @Override
   public void teleopPeriodic() {
+    List<DeviceOutputCommand> driveMotorCommands = this.driveSubsystem.run(new DifferentialDriveModel(.3, .3));
+    hardwareInterface.run(driveMotorCommands);
   }
 
   @Override

@@ -16,6 +16,8 @@
  -->
 
 <module name = "Checker">
+
+
     <property name="charset" value="UTF-8"/>
 
     <property name="severity" value="warning"/>
@@ -34,25 +36,28 @@
 
     <module name="LineLength">
         <property name="fileExtensions" value="java"/>
-        <property name="max" value="100"/>
+        <property name="max" value="120"/>
         <property name="ignorePattern" value="^package.*|^import.*|a href|href|http://|https://|ftp://"/>
     </module>
 
     <!-- Filter out Checkstyle warnings that have been suppressed with the @SuppressWarnings annotation -->
     <module name="SuppressWarningsFilter" />
-
+  
+  
     <module name="TreeWalker">
         <!-- Make the @SuppressWarnings annotations available to Checkstyle -->
         <module name="SuppressWarningsHolder" />
 
-        <module name="SuppressionCommentFilter">
+        <!-- <module name="SuppressionCommentFilter">
             <property name="offCommentFormat" value="CHECKSTYLE.OFF\: ([\w\|]+)"/>
             <property name="onCommentFormat" value="CHECKSTYLE.ON\: ([\w\|]+)"/>
             <property name="checkFormat" value="$1"/>
+        </module> -->
+
+        <module name="VisibilityModifier">
+          <property name="allowPublicFinalFields" value="true"/>
+          <property name="protectedAllowed" value="true"/>
         </module>
-
-        <module name="VisibilityModifier"/>
-
 
         <module name="OuterTypeFilename"/>
         <module name="IllegalTokenText">
@@ -209,7 +214,7 @@
         </module>
         <module name="AbbreviationAsWordInName">
             <property name="ignoreFinal" value="false"/>
-            <property name="allowedAbbreviationLength" value="1"/>
+            <property name="allowedAbbreviationLength" value="3"/>
         </module>
         <module name="OverloadMethodsDeclarationOrder"/>
         <module name="VariableDeclarationUsageDistance"/>
@@ -264,8 +269,8 @@
         </module>
         <module name="MissingJavadocMethod">
             <property name="scope" value="public"/>
-            <property name="minLineCount" value="2"/>
-            <property name="allowedAnnotations" value="Override, Test"/>
+            <property name="minLineCount" value="5"/>
+            <property name="allowedAnnotations" value="Override, Test, Parameters"/>
         </module>
         <module name="MethodName">
             <property name="format" value="^[a-z][a-z0-9][a-zA-Z0-9_]*$"/>
