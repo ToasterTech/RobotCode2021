@@ -27,7 +27,7 @@ public class DifferentialDriveModel extends DriveModel {
       return false;
     }
     DifferentialDriveModel otherVal = (DifferentialDriveModel)other;
-    return this.left == otherVal.left & this.right == otherVal.right;
+    return this.left == otherVal.left && this.right == otherVal.right;
   }
 
   @Override

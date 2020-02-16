@@ -7,8 +7,10 @@
 
 package frc.robot;
 
-import edu.wpi.first.wpilibj.PWMTalonSRX;
+import com.revrobotics.CANSparkMaxLowLevel.MotorType;
+
 import frc.robot.devices.commands.DeviceOutputCommand;
+import frc.robot.devices.output.DeviceCANSparkMax;
 import frc.robot.devices.output.DeviceOutput;
 import frc.robot.devices.output.DevicePWMTalonSRX;
 import java.util.HashMap;
@@ -26,6 +28,7 @@ public class HardwareInterface {
     this.deviceMap = new HashMap<String, DeviceOutput>();
     this.deviceMap.put("leftMotor", new DevicePWMTalonSRX(2));
     this.deviceMap.put("rightMotor", new DevicePWMTalonSRX(1));
+    this.deviceMap.put("shooterMotor", new DeviceCANSparkMax(1, MotorType.kBrushless, true));
   }
 
   /**
@@ -43,6 +46,7 @@ public class HardwareInterface {
         );
       }
     }
+
   }
 
 }

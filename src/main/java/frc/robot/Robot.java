@@ -9,9 +9,15 @@ package frc.robot;
 
 import edu.wpi.first.wpilibj.TimedRobot;
 import frc.robot.devices.commands.DeviceOutputCommand;
+import frc.robot.devices.commands.GenericMotorCAN;
+import frc.robot.devices.commands.VelocityControlMotorCAN;
 import frc.robot.subsystem.drive.DriveSubsystem;
 import frc.robot.subsystem.drive.models.DifferentialDriveModel;
+
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 
 /**
@@ -50,8 +56,28 @@ public class Robot extends TimedRobot {
 
   @Override
   public void teleopPeriodic() {
-    List<DeviceOutputCommand> driveMotorCommands = this.driveSubsystem.run(new DifferentialDriveModel(.3, .3));
-    hardwareInterface.run(driveMotorCommands);
+    List<DeviceOutputCommand> driveMotorCommands = this.driveSubsystem.run(
+        new DifferentialDriveModel(0, 0)
+    );
+    List<DeviceOutputCommand> shooterCommands = Arrays.asList(
+        new VelocityControlMotorCAN(
+          "shooterMotor", 
+          .1,
+          .000330,
+          .000000,
+          .00002,
+          .000025,
+          .000175,
+          5700
+        )
+    );
+    hardwareInterface.run(
+        // Join lists in java, ugh
+        Stream.concat(
+            driveMotorCommands.stream(), 
+            shooterCommands.stream()
+        ).collect(Collectors.toList())
+    );
   }
 
   @Override
