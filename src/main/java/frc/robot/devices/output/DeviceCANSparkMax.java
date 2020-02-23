@@ -69,9 +69,6 @@ public class DeviceCANSparkMax extends MotorPWM {
             canCommand.setpoint * canCommand.maxRPM, 
             ControlType.kVelocity
         );
-        SmartDashboard.putNumber("SetPoint", canCommand.setpoint * canCommand.maxRPM);
-        SmartDashboard.putNumber("ProcessVariable", this.encoder.getVelocity());
-        SmartDashboard.putNumber("MotorValue",  this.controller.get());
       }
     }
   }
