@@ -23,11 +23,17 @@ import java.util.List;
 public class HardwareInterface {
   private HashMap<String, DeviceOutput> deviceMap; 
 
-
+  /**
+   * Constructor to HardwareInterface. Setup the device mappings. 
+   */
   public HardwareInterface() {
     this.deviceMap = new HashMap<String, DeviceOutput>();
-    this.deviceMap.put("leftMotor", new DevicePWMTalonSRX(2));
-    this.deviceMap.put("rightMotor", new DevicePWMTalonSRX(1));
+    // TODO: Make these addressed correctly
+    this.deviceMap.put("leftMotor1", new DevicePWMTalonSRX(1));
+    this.deviceMap.put("leftMotor2", new DevicePWMTalonSRX(2));
+    this.deviceMap.put("rightMotor1", new DevicePWMTalonSRX(3));
+    this.deviceMap.put("rightMotor2", new DevicePWMTalonSRX(4));
+
     this.deviceMap.put("shooterMotor", new DeviceCANSparkMax(1, MotorType.kBrushless, true));
   }
 

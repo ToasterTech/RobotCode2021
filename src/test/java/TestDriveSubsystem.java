@@ -26,8 +26,11 @@ public class TestDriveSubsystem {
    */
   public static List<GenericMotorPWM> buildExpectedMotorOutputs(double left, double right) {
     return Arrays.asList(
-      new GenericMotorPWM("leftMotor", left),
-      new GenericMotorPWM("rightMotor", right)
+      new GenericMotorPWM("leftMotor1", left),
+      new GenericMotorPWM("leftMotor2", left),
+      new GenericMotorPWM("rightMotor1", right),
+      new GenericMotorPWM("rightMotor2", right)
+
     );
   }
 
