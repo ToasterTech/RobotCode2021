@@ -7,15 +7,9 @@
 
 package frc.robot;
 
-import com.revrobotics.CANSparkMaxLowLevel.MotorType;
-
-import edu.wpi.first.wpilibj.Joystick;
 import frc.robot.devices.commands.DeviceOutputCommand;
 import frc.robot.devices.input.DeviceInput;
-import frc.robot.devices.input.gamepad.GamepadInput;
-import frc.robot.devices.output.DeviceCANSparkMax;
 import frc.robot.devices.output.DeviceOutput;
-import frc.robot.devices.output.DevicePWMTalonSRX;
 import frc.robot.util.InputContainer;
 
 import java.util.HashMap;
@@ -26,26 +20,16 @@ import java.util.Map;
 /**
  * Add your docs here.
  */
-public class HardwareInterface extends BaseHardwareInterface {
+public class BaseHardwareInterface {
+  protected HashMap<String, DeviceOutput> outputMap;
+  protected HashMap<String, DeviceInput<?>> inputMap;
+
   /**
-   * Constructor to HardwareInterface. Setup the device mappings. 
+   * Constructor to HardwareInterface. Setup the device mappings.
    */
-  public HardwareInterface() {
-    super();
-
-    // TODO: Make these addressed correctly
-    this.outputMap.put("leftMotor1", new DevicePWMTalonSRX(1));
-    this.outputMap.put("leftMotor2", new DevicePWMTalonSRX(2));
-    this.outputMap.put("rightMotor1", new DevicePWMTalonSRX(3));
-    this.outputMap.put("rightMotor2", new DevicePWMTalonSRX(4));
-
-    DeviceCANSparkMax shooterMotor = new DeviceCANSparkMax(1, MotorType.kBrushless, true);
-    this.outputMap.put("shooterMotor", shooterMotor);
-    this.inputMap.put("shooterEncoderVelocity", shooterMotor.getEncoderVelocityInput());
-
-    GamepadInput gamepad = new GamepadInput("driverJoystick", new Joystick(1));
-    this.inputMap.put("driverGamepad", gamepad);
-    this.inputMap.putAll(gamepad.getDeviceMap());
+  public BaseHardwareInterface() {
+    this.outputMap = new HashMap<String, DeviceOutput>();
+    this.inputMap = new HashMap<String, DeviceInput<?>>();
   }
 
   /**

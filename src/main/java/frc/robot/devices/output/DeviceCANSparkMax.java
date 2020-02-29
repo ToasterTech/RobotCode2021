@@ -17,6 +17,7 @@ import com.revrobotics.EncoderType;
 import frc.robot.devices.commands.DeviceOutputCommand;
 import frc.robot.devices.commands.GenericMotorCAN;
 import frc.robot.devices.commands.VelocityControlMotorCAN;
+import frc.robot.devices.input.EncoderVelocityInputCAN;
 
 import java.util.List;
 
@@ -53,6 +54,9 @@ public class DeviceCANSparkMax extends MotorPWM {
     }
   }
 
+  public EncoderVelocityInputCAN getEncoderVelocityInput() {
+    return new EncoderVelocityInputCAN(this.encoder);
+  }
 
   public void setupPID() {
     this.pidController = controller.getPIDController();

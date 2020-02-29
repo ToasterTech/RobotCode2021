@@ -3,8 +3,6 @@ import static org.junit.Assert.assertEquals;
 import frc.robot.devices.commands.GenericMotorCAN;
 import frc.robot.devices.commands.VelocityControlMotorCAN;
 import frc.robot.devices.output.DeviceOutput;
-import frc.robot.subsystem.drive.DriveSubsystem;
-import frc.robot.subsystem.drive.models.DifferentialDriveModel;
 import frc.robot.subsystem.shooter.ShooterSubsystem;
 import frc.robot.subsystem.shooter.models.ShooterSubsystemModel;
 
