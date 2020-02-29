@@ -14,11 +14,11 @@ import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import com.revrobotics.ControlType;
 import com.revrobotics.EncoderType;
 
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-
 import frc.robot.devices.commands.DeviceOutputCommand;
 import frc.robot.devices.commands.GenericMotorCAN;
 import frc.robot.devices.commands.VelocityControlMotorCAN;
+
+import java.util.List;
 
 /**
  * Motor device for SparkMax.
@@ -28,25 +28,41 @@ public class DeviceCANSparkMax extends MotorPWM {
   private CANPIDController pidController;
   private CANEncoder encoder;
   private boolean pidEnabled;
+  private List<FollowerMotorCAN> followers;
 
+  /**
+   * Default constructor.
+   * @param channel can ID 
+   * @param motorType motortype either brushed or brushless
+   * @param setupPID setup PID for this motor
+   */
   public DeviceCANSparkMax(int channel, MotorType motorType, boolean setupPID) {
     this.controller = new CANSparkMax(channel, motorType);
+    this.encoder = controller.getEncoder(EncoderType.kHallSensor, 4096);
     this.controller.restoreFactoryDefaults();
     if (setupPID) {
       this.setupPID();
     }
   }
 
+  public DeviceCANSparkMax(int channel, MotorType motorType, boolean setupPID, List<FollowerMotorCAN> followers) {
+    this(channel, motorType, setupPID);
+    this.followers = followers;
+    for (FollowerMotorCAN follower: this.followers) {
+      follower.follow(this.controller);
+    }
+  }
+
+
   public void setupPID() {
     this.pidController = controller.getPIDController();
-    this.encoder = controller.getEncoder(EncoderType.kHallSensor, 4096);
     this.pidEnabled = true;
   }
   
   @Override
   public boolean isValidCommand(DeviceOutputCommand command) {
     return (command instanceof GenericMotorCAN 
-        || command instanceof VelocityControlMotorCAN);
+        || (command instanceof VelocityControlMotorCAN && this.pidEnabled));
   }
 
   @Override
