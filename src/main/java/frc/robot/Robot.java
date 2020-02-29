@@ -7,17 +7,20 @@
 
 package frc.robot;
 
+import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.TimedRobot;
 import frc.robot.devices.commands.DeviceOutputCommand;
-import frc.robot.devices.commands.VelocityControlMotorCAN;
+import frc.robot.subsystem.conveyor.ConveyorSubsystem;
+import frc.robot.subsystem.conveyor.models.ConveyorSystemModel;
 import frc.robot.subsystem.drive.DriveSubsystem;
 import frc.robot.subsystem.drive.models.DifferentialDriveModel;
+import frc.robot.subsystem.shooter.ShooterSubsystem;
+import frc.robot.subsystem.shooter.models.ShooterSubsystemModel;
 
-import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -28,7 +31,12 @@ import java.util.stream.Stream;
  */
 public class Robot extends TimedRobot {
   private DriveSubsystem driveSubsystem;
+  private ShooterSubsystem shooterSubsystem;
+  private ConveyorSubsystem conveyorSystem;
+
   private HardwareInterface hardwareInterface;
+  private Joystick controller = new Joystick(0);
+
 
   /**
    * This function is run when the robot is first started up and should be used
@@ -37,6 +45,8 @@ public class Robot extends TimedRobot {
   @Override
   public void robotInit() {
     this.driveSubsystem = new DriveSubsystem();
+    this.shooterSubsystem = new ShooterSubsystem();
+    this.conveyorSystem = new ConveyorSubsystem();
     this.hardwareInterface = new HardwareInterface();
   }
 
@@ -55,27 +65,37 @@ public class Robot extends TimedRobot {
 
   @Override
   public void teleopPeriodic() {
+    List<DeviceOutputCommand> shooterCommands;
+    List<DeviceOutputCommand> conveyorCommands;
+
     List<DeviceOutputCommand> driveMotorCommands = this.driveSubsystem.run(
-        new DifferentialDriveModel(0, 0)
+        new DifferentialDriveModel(controller.getRawAxis(0), controller.getRawAxis(2))
     );
-    List<DeviceOutputCommand> shooterCommands = Arrays.asList(
-        new VelocityControlMotorCAN(
-          "shooterMotor", 
-          .1,
-          .000330,
-          .000000,
-          .00002,
-          .000025,
-          .000175,
-          5700
-        )
-    );
+    // These buttons may be wrong, need to investigate.
+    if (controller.getRawButton(0)) {
+      shooterCommands = this.shooterSubsystem.run(
+          new ShooterSubsystemModel(ShooterSubsystemModel.ShooterState.SHOOT_DEFAULT)
+      );
+    } else {
+      shooterCommands = this.shooterSubsystem.run(
+          new ShooterSubsystemModel(ShooterSubsystemModel.ShooterState.STOPPED)
+      );
+    }
+    // These buttons may be wrong, need to investigate.
+    if (controller.getRawButton(1)) {
+      conveyorCommands = this.conveyorSystem.run(
+          new ConveyorSystemModel(ConveyorSystemModel.IntakeState.INTAKE)
+      );
+    } else {
+      conveyorCommands = this.conveyorSystem.run(
+        new ConveyorSystemModel(ConveyorSystemModel.IntakeState.STOPPED)
+      );
+    }
     hardwareInterface.run(
-        // Join lists in java, ugh
-        Stream.concat(
-            driveMotorCommands.stream(), 
-            shooterCommands.stream()
-        ).collect(Collectors.toList())
+        //Don't worry about this code, I know it is confusing, but it does make sense
+        Stream.of(shooterCommands, conveyorCommands, driveMotorCommands)
+          .flatMap(Collection::stream)
+          .collect(Collectors.toList())
     );
   }
 
