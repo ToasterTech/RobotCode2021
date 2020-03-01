@@ -71,25 +71,12 @@ public class Robot extends TimedRobot {
   public void teleopPeriodic() {
     List<DeviceOutputCommand> shooterCommands;
     List<DeviceOutputCommand> conveyorCommands;
-    List<DeviceOutputCommand> solenoidCommands = new ArrayList<DeviceOutputCommand>();
 
     HashMap<String, InputContainer<?>> inputMap = hardwareInterface.getInputValueMap();
 
     List<DeviceOutputCommand> driveMotorCommands = this.driveSubsystem.run(
         new DifferentialDriveModel(0, 0)
     );
-
-    if ((double)inputMap.get("driverLeftTrigger").getValue() > .5) {
-      solenoidCommands.add(new SolenoidCommand("intakeStop", SolenoidCommand.SolenoidState.OPEN));
-    } else {
-      solenoidCommands.add(new SolenoidCommand("intakeStop", SolenoidCommand.SolenoidState.CLOSE));
-    }
-
-    if ((double)inputMap.get("driverRightTrigger").getValue() > .5) {
-      solenoidCommands.add(new SolenoidCommand("intakeDrop", SolenoidCommand.SolenoidState.OPEN));
-    } else {
-      solenoidCommands.add(new SolenoidCommand("intakeDrop", SolenoidCommand.SolenoidState.CLOSE));
-    }
 
     // This is temporary we need a better way of addressing this
     if ((boolean)inputMap.get("driverLeftShoulder").getValue()) {
@@ -101,15 +88,13 @@ public class Robot extends TimedRobot {
           new ShooterSubsystemModel(ShooterSubsystemModel.ShooterState.STOPPED)
       );
     }
-    if ((boolean)inputMap.get("driverRightShoulder").getValue()) {
-      conveyorCommands = this.conveyorSystem.run(
-          new ConveyorSystemModel(ConveyorSystemModel.IntakeState.INTAKE)
-      );
-    } else {
-      conveyorCommands = this.conveyorSystem.run(
-        new ConveyorSystemModel(ConveyorSystemModel.IntakeState.STOPPED)
-      );
-    }
+    conveyorCommands = this.conveyorSystem.run(
+        new ConveyorSystemModel(
+          ((boolean)inputMap.get("driverRightShoulder").getValue()) ? ConveyorSystemModel.IntakeState.INTAKE : ConveyorSystemModel.IntakeState.STOPPED,
+          ((double)inputMap.get("driverRightTrigger").getValue() > .5) ? ConveyorSystemModel.IntakePosition.DOWN : ConveyorSystemModel.IntakePosition.UP,
+          ((boolean)inputMap.get("driverLeftShoulder").getValue()) ? ConveyorSystemModel.ShooterBlockState.OPEN : ConveyorSystemModel.ShooterBlockState.CLOSE
+        )
+    );
     SmartDashboard.putBoolean("RightShoulder", (boolean)inputMap.get("driverRightShoulder").getValue());
     SmartDashboard.putBoolean("LeftShoulder", (boolean)inputMap.get("driverLeftShoulder").getValue());
     SmartDashboard.putNumber("LeftTrigger", (double)inputMap.get("driverLeftTrigger").getValue());
@@ -122,8 +107,7 @@ public class Robot extends TimedRobot {
         Stream.of(
             // driveMotorCommands,
             shooterCommands, 
-            conveyorCommands,
-            solenoidCommands)
+            conveyorCommands)
           .flatMap(Collection::stream)
           .collect(Collectors.toList())
     );

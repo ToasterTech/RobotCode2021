@@ -17,11 +17,23 @@ public class ConveyorSystemModel extends ConveyorModel {
     INTAKE, OUTTAKE, STOPPED
   }
 
+  public enum IntakePosition {
+    UP, DOWN
+  }
+
+  public enum ShooterBlockState {
+    OPEN, CLOSE
+  }
+
+
   public final IntakeState intakeState; 
+  public final IntakePosition intakePosition;
+  public final ShooterBlockState shooterBlockState;
 
-
-  public ConveyorSystemModel(IntakeState intakeState) {
+  public ConveyorSystemModel(IntakeState intakeState, IntakePosition intakePosition, ShooterBlockState shooterBlockState) {
     this.intakeState = intakeState;
+    this.intakePosition = intakePosition;
+    this.shooterBlockState = shooterBlockState;
   }
 
   @Override
@@ -30,11 +42,11 @@ public class ConveyorSystemModel extends ConveyorModel {
       return false;
     }
     ConveyorSystemModel otherVal = (ConveyorSystemModel)other;
-    return this.intakeState == otherVal.intakeState;
+    return this.intakeState == otherVal.intakeState && this.intakePosition == otherVal.intakePosition && this.shooterBlockState == otherVal.shooterBlockState;
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(this.intakeState);
+    return Objects.hash(this.intakeState, this.intakePosition, this.shooterBlockState);
   }
 }
