@@ -7,6 +7,7 @@
 
 package frc.robot;
 
+import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 import edu.wpi.first.wpilibj.Joystick;
@@ -16,8 +17,11 @@ import frc.robot.devices.input.gamepad.GamepadInput;
 import frc.robot.devices.output.DeviceCANSparkMax;
 import frc.robot.devices.output.DeviceOutput;
 import frc.robot.devices.output.DevicePWMTalonSRX;
+import frc.robot.devices.output.DeviceSolenoid;
+import frc.robot.devices.output.FollowerMotorCAN;
 import frc.robot.util.InputContainer;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -39,15 +43,22 @@ public class HardwareInterface extends BaseHardwareInterface {
     this.outputMap.put("rightMotor1", new DevicePWMTalonSRX(3));
     this.outputMap.put("rightMotor2", new DevicePWMTalonSRX(4));
 
-    DeviceCANSparkMax shooterMotor = new DeviceCANSparkMax(2, MotorType.kBrushless, true);
-    DeviceCANSparkMax shooterFollower = new DeviceCANSparkMax(1, MotorType.kBrushless, false);
+    this.outputMap.put("intakeStop", new DeviceSolenoid(0));
+    this.outputMap.put("intakeDrop", new DeviceSolenoid(2));
+
+    DeviceCANSparkMax shooterMotor = new DeviceCANSparkMax(2, MotorType.kBrushless, true, Arrays.asList(
+        new FollowerMotorCAN(new CANSparkMax(1, MotorType.kBrushless), true)
+    ));
 
     this.outputMap.put("shooterMotor", shooterMotor);
     this.inputMap.put("shooterEncoderVelocity", shooterMotor.getEncoderVelocityInput());
 
-    this.outputMap.put("conveyorMotor", new DeviceCANSparkMax(3, MotorType.kBrushless, false));
+    DeviceCANSparkMax conveyorMotor = new DeviceCANSparkMax(3, MotorType.kBrushless, true);
+    
+    this.outputMap.put("conveyorMotor", conveyorMotor);
+    this.inputMap.put("conveyorEncoderVelocity", conveyorMotor.getEncoderVelocityInput());
 
-    GamepadInput gamepad = new GamepadInput("driverJoystick", new Joystick(1));
+    GamepadInput gamepad = new GamepadInput("driver", new Joystick(1));
     this.inputMap.put("driverGamepad", gamepad);
     this.inputMap.putAll(gamepad.getDeviceMap());
   }

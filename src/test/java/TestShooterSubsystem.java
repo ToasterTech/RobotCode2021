@@ -37,7 +37,7 @@ public class TestShooterSubsystem {
           Arrays.asList(
             new VelocityControlMotorCAN(
               "shooterMotor", 
-              1,
+              -1,
               .000330,
               .000000,
               .00002,

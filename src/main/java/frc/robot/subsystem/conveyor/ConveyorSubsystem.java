@@ -9,6 +9,7 @@ package frc.robot.subsystem.conveyor;
 
 import frc.robot.devices.commands.DeviceOutputCommand;
 import frc.robot.devices.commands.GenericMotorCAN;
+import frc.robot.devices.commands.VelocityControlMotorCAN;
 import frc.robot.subsystem.RobotSubsystem;
 import frc.robot.subsystem.conveyor.models.ConveyorModel;
 import frc.robot.subsystem.conveyor.models.ConveyorSystemModel;
@@ -30,12 +31,22 @@ public class ConveyorSubsystem extends RobotSubsystem<ConveyorModel> {
       }
       if (conveyorSystemModel.intakeState == ConveyorSystemModel.IntakeState.INTAKE) {
         return Arrays.asList(
-          new GenericMotorCAN("conveyorMotor", 1)
+          // new GenericMotorCAN("conveyorMotor", -.3)
+          new VelocityControlMotorCAN(
+            "conveyorMotor", 
+            -.25,
+            .000300,
+            .000000,
+            .00002,
+            .000025,
+            .000175,
+            5700
+          )
         );
       }
       if (conveyorSystemModel.intakeState == ConveyorSystemModel.IntakeState.OUTTAKE) {
         return Arrays.asList(
-          new GenericMotorCAN("conveyorMotor", -1)
+          new GenericMotorCAN("conveyorMotor", 1)
         );
       }
     }

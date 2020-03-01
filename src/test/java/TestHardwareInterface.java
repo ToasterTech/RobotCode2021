@@ -51,13 +51,13 @@ public class TestHardwareInterface {
   public void testGamepad() {
     // Test to make sure the input map is being generated correctly.
     Joystick testJoystick = Mockito.mock(Joystick.class);
-    Mockito.doReturn(true).when(testJoystick).getRawButton(1);
-    Mockito.doReturn(false).when(testJoystick).getRawButton(2);
+    Mockito.doReturn(true).when(testJoystick).getRawButton(6);
+    Mockito.doReturn(false).when(testJoystick).getRawButton(5);
 
-    Mockito.when(testJoystick.getRawAxis(1)).thenReturn(1.0);
-    Mockito.when(testJoystick.getRawAxis(2)).thenReturn(-1.0);
-    Mockito.when(testJoystick.getRawAxis(3)).thenReturn(.5);
-    Mockito.when(testJoystick.getRawAxis(4)).thenReturn(-.5);
+    Mockito.when(testJoystick.getRawAxis(0)).thenReturn(1.0);
+    Mockito.when(testJoystick.getRawAxis(1)).thenReturn(-1.0);
+    Mockito.when(testJoystick.getRawAxis(4)).thenReturn(.5);
+    Mockito.when(testJoystick.getRawAxis(5)).thenReturn(-.5);
 
     GamepadInput gamepadTest = new GamepadInput("driver", testJoystick);
 
@@ -70,8 +70,8 @@ public class TestHardwareInterface {
     for (Map.Entry<String, InputContainer<?>> entry: inputValueMap.entrySet()) {
       assertEquals(entry.getValue(), gamepadTest.getValue().getValue().get(entry.getKey()));
     }
-    Boolean driveLeftTrigger = (boolean)testHW.getInputValueMap().get("driverLeftTrigger").getValue();
-    Boolean driveRightTrigger = (boolean)testHW.getInputValueMap().get("driverRightTrigger").getValue();
+    Boolean driveLeftTrigger = (boolean)testHW.getInputValueMap().get("driverLeftShoulder").getValue();
+    Boolean driveRightTrigger = (boolean)testHW.getInputValueMap().get("driverRightShoulder").getValue();
 
     final double leftJoyX = (double)testHW.getInputValueMap().get("driverLeftAxisX").getValue();
     final double leftJoyY = (double)testHW.getInputValueMap().get("driverLeftAxisY").getValue();

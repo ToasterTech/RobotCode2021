@@ -37,13 +37,16 @@ public class GamepadInput implements DeviceInput<HashMap<String, InputContainer<
     this.name = name;
 
     //TODO: These mappings are most certainly wrong.
-    this.addGamepadComponent("left", new GamepadAxis(this.joystick, 1, "AxisX"));
-    this.addGamepadComponent("left", new GamepadAxis(this.joystick, 2, "AxisY"));
-    this.addGamepadComponent("right", new GamepadAxis(this.joystick, 3, "AxisX"));
-    this.addGamepadComponent("right", new GamepadAxis(this.joystick, 4, "AxisY"));
+    this.addGamepadComponent("left", new GamepadAxis(this.joystick, 0, "AxisX"));
+    this.addGamepadComponent("left", new GamepadAxis(this.joystick, 1, "AxisY"));
+    this.addGamepadComponent("right", new GamepadAxis(this.joystick, 4, "AxisX"));
+    this.addGamepadComponent("right", new GamepadAxis(this.joystick, 5, "AxisY"));
 
-    this.addGamepadComponent("left", new GamepadButton(this.joystick, 1, "Trigger"));
-    this.addGamepadComponent("right", new GamepadButton(this.joystick, 2, "Trigger"));
+    this.addGamepadComponent("left", new GamepadAxis(this.joystick, 2, "Trigger"));
+    this.addGamepadComponent("right", new GamepadAxis(this.joystick, 3, "Trigger"));
+
+    this.addGamepadComponent("left", new GamepadButton(this.joystick, 6, "Shoulder"));
+    this.addGamepadComponent("right", new GamepadButton(this.joystick, 5, "Shoulder"));
 
   }
 

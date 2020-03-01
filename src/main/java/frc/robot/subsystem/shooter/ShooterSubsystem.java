@@ -36,7 +36,7 @@ public class ShooterSubsystem extends RobotSubsystem<ShooterModel> {
           return Arrays.asList(
             new VelocityControlMotorCAN(
               "shooterMotor", 
-              1,
+              -1,
               .000330,
               .000000,
               .00002,

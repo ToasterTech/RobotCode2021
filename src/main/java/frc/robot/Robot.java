@@ -9,15 +9,20 @@ package frc.robot;
 
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.devices.commands.DeviceOutputCommand;
+import frc.robot.devices.commands.SolenoidCommand;
 import frc.robot.subsystem.conveyor.ConveyorSubsystem;
 import frc.robot.subsystem.conveyor.models.ConveyorSystemModel;
 import frc.robot.subsystem.drive.DriveSubsystem;
 import frc.robot.subsystem.drive.models.DifferentialDriveModel;
 import frc.robot.subsystem.shooter.ShooterSubsystem;
 import frc.robot.subsystem.shooter.models.ShooterSubsystemModel;
+import frc.robot.util.InputContainer;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -35,7 +40,6 @@ public class Robot extends TimedRobot {
   private ConveyorSubsystem conveyorSystem;
 
   private HardwareInterface hardwareInterface;
-  private Joystick controller = new Joystick(0);
 
 
   /**
@@ -67,12 +71,28 @@ public class Robot extends TimedRobot {
   public void teleopPeriodic() {
     List<DeviceOutputCommand> shooterCommands;
     List<DeviceOutputCommand> conveyorCommands;
+    List<DeviceOutputCommand> solenoidCommands = new ArrayList<DeviceOutputCommand>();
+
+    HashMap<String, InputContainer<?>> inputMap = hardwareInterface.getInputValueMap();
 
     List<DeviceOutputCommand> driveMotorCommands = this.driveSubsystem.run(
-        new DifferentialDriveModel(controller.getRawAxis(0), controller.getRawAxis(2))
+        new DifferentialDriveModel(0, 0)
     );
-    // These buttons may be wrong, need to investigate.
-    if (controller.getRawButton(0)) {
+
+    if ((double)inputMap.get("driverLeftTrigger").getValue() > .5) {
+      solenoidCommands.add(new SolenoidCommand("intakeStop", SolenoidCommand.SolenoidState.OPEN));
+    } else {
+      solenoidCommands.add(new SolenoidCommand("intakeStop", SolenoidCommand.SolenoidState.CLOSE));
+    }
+
+    if ((double)inputMap.get("driverRightTrigger").getValue() > .5) {
+      solenoidCommands.add(new SolenoidCommand("intakeDrop", SolenoidCommand.SolenoidState.OPEN));
+    } else {
+      solenoidCommands.add(new SolenoidCommand("intakeDrop", SolenoidCommand.SolenoidState.CLOSE));
+    }
+
+    // This is temporary we need a better way of addressing this
+    if ((boolean)inputMap.get("driverLeftShoulder").getValue()) {
       shooterCommands = this.shooterSubsystem.run(
           new ShooterSubsystemModel(ShooterSubsystemModel.ShooterState.SHOOT_DEFAULT)
       );
@@ -81,8 +101,7 @@ public class Robot extends TimedRobot {
           new ShooterSubsystemModel(ShooterSubsystemModel.ShooterState.STOPPED)
       );
     }
-    // These buttons may be wrong, need to investigate.
-    if (controller.getRawButton(1)) {
+    if ((boolean)inputMap.get("driverRightShoulder").getValue()) {
       conveyorCommands = this.conveyorSystem.run(
           new ConveyorSystemModel(ConveyorSystemModel.IntakeState.INTAKE)
       );
@@ -91,9 +110,20 @@ public class Robot extends TimedRobot {
         new ConveyorSystemModel(ConveyorSystemModel.IntakeState.STOPPED)
       );
     }
+    SmartDashboard.putBoolean("RightShoulder", (boolean)inputMap.get("driverRightShoulder").getValue());
+    SmartDashboard.putBoolean("LeftShoulder", (boolean)inputMap.get("driverLeftShoulder").getValue());
+    SmartDashboard.putNumber("LeftTrigger", (double)inputMap.get("driverLeftTrigger").getValue());
+    SmartDashboard.putNumber("RightTrigger", (double)inputMap.get("driverRightTrigger").getValue());
+    SmartDashboard.putNumber("ShooterSpeed", (double)inputMap.get("shooterEncoderVelocity").getValue());
+    SmartDashboard.putNumber("ConveyorSpeed", (double)inputMap.get("conveyorEncoderVelocity").getValue());
+
     hardwareInterface.run(
         //Don't worry about this code, I know it is confusing, but it does make sense
-        Stream.of(shooterCommands, conveyorCommands, driveMotorCommands)
+        Stream.of(
+            // driveMotorCommands,
+            shooterCommands, 
+            conveyorCommands,
+            solenoidCommands)
           .flatMap(Collection::stream)
           .collect(Collectors.toList())
     );
