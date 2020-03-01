@@ -22,6 +22,27 @@ import java.util.List;
  * Subsystem for transforming shooter models to motor commands.
  */
 public class ShooterSubsystem extends RobotSubsystem<ShooterModel> {
+  private static final int MOTOR_RPM = 5700; 
+  private static final double SHOOT_DEFAULT_SETPOINT = 1;
+
+
+  //These methods should go somewhere else in better designed code, but we are in a rush.
+  /**
+   * Calculate the expected speed at the setpoint. 
+   * @param shooterSubsystemModel shooter state
+   * @return return speed in RPM
+   */
+  public double calculateSetpointSpeed(ShooterSubsystemModel shooterSubsystemModel) {
+    switch (shooterSubsystemModel.shooterState) {
+      case STOPPED:
+        return 0.0;
+      case SHOOT_DEFAULT:
+        return ShooterSubsystem.SHOOT_DEFAULT_SETPOINT * ShooterSubsystem.MOTOR_RPM;
+      default:
+        break;
+    }
+    return 0.0;
+  }
 
   @Override
   public List<DeviceOutputCommand> run(ShooterModel input) {

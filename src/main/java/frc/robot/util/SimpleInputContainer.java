@@ -10,7 +10,7 @@ package frc.robot.util;
 import java.util.Objects;
 
 /**
- * A model for robot data.
+ * A container for inputs.
  */
 public class SimpleInputContainer<T> implements InputContainer<T>  {
   private T value;
