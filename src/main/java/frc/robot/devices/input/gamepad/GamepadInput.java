@@ -18,6 +18,8 @@ import java.util.Objects;
 
 import org.apache.commons.lang3.StringUtils;
 
+//TODO: The wildcard type parameter is nasty and leads to unchecked exceptions, which are fine 
+// because we actually know what they are, but we should avoid anyway.
 /**
  * Playstation Controller.
  */

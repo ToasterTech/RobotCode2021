@@ -46,15 +46,31 @@ public class HardwareInterface extends BaseHardwareInterface {
     this.outputMap.put("intakeStop", new DeviceSolenoid(0));
     this.outputMap.put("intakeDrop", new DeviceSolenoid(2));
 
-    DeviceCANSparkMax shooterMotor = new DeviceCANSparkMax(2, MotorType.kBrushless, true, Arrays.asList(
-        new FollowerMotorCAN(new CANSparkMax(1, MotorType.kBrushless), true)
+    DeviceCANSparkMax shooterMotor = new DeviceCANSparkMax(2, MotorType.kBrushless, Arrays.asList(
+        new FollowerMotorCAN(new CANSparkMax(1, MotorType.kBrushless))
     ));
+    // Probably need to tune this some 
+    shooterMotor.setupPID(
+        .000330,
+        .000000,
+        .00002,
+        .000025,
+        .000175
+    );
 
     this.outputMap.put("shooterMotor", shooterMotor);
     this.inputMap.put("shooterEncoderVelocity", shooterMotor.getEncoderVelocityInput());
 
-    DeviceCANSparkMax conveyorMotor = new DeviceCANSparkMax(3, MotorType.kBrushless, true);
-    
+    DeviceCANSparkMax conveyorMotor = new DeviceCANSparkMax(3, MotorType.kBrushless);
+    // Probably need to tune this some 
+    conveyorMotor.setupPID(
+        .000330,
+        .000000,
+        .00002,
+        .000025,
+        .000175
+    );
+
     this.outputMap.put("conveyorMotor", conveyorMotor);
     this.inputMap.put("conveyorEncoderVelocity", conveyorMotor.getEncoderVelocityInput());
 

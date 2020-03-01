@@ -31,23 +31,25 @@ public class DeviceCANSparkMax extends MotorPWM {
   private boolean pidEnabled;
   private List<FollowerMotorCAN> followers;
 
+  private double gainP;
+  private double gainI;
+  private double gainD;
+  private double zoneI;
+  private double gainFF;
+
   /**
    * Default constructor.
    * @param channel can ID 
    * @param motorType motortype either brushed or brushless
-   * @param setupPID setup PID for this motor
    */
-  public DeviceCANSparkMax(int channel, MotorType motorType, boolean setupPID) {
+  public DeviceCANSparkMax(int channel, MotorType motorType) {
     this.controller = new CANSparkMax(channel, motorType);
     this.encoder = controller.getEncoder(EncoderType.kHallSensor, 4096);
     this.controller.restoreFactoryDefaults();
-    if (setupPID) {
-      this.setupPID();
-    }
   }
 
-  public DeviceCANSparkMax(int channel, MotorType motorType, boolean setupPID, List<FollowerMotorCAN> followers) {
-    this(channel, motorType, setupPID);
+  public DeviceCANSparkMax(int channel, MotorType motorType, List<FollowerMotorCAN> followers) {
+    this(channel, motorType);
     this.followers = followers;
     for (FollowerMotorCAN follower: this.followers) {
       follower.follow(this.controller);
@@ -58,9 +60,37 @@ public class DeviceCANSparkMax extends MotorPWM {
     return new EncoderVelocityInputCAN(this.encoder);
   }
 
-  public void setupPID() {
+  public void setupPID(double gainP, double gainI, double gainD,
+                       double zoneI, double gainFF) {
     this.pidController = controller.getPIDController();
     this.pidEnabled = true;
+    this.updatePIDGains(gainP, gainI, gainD,
+                        zoneI, gainFF);
+  }
+
+  /**
+   * Update PID gains based on what is used on the onboard CAN.
+   * @param gainP propotional gain
+   * @param gainI integral gain
+   * @param gainD derivative gain
+   * @param zoneI I zone 
+   * @param gainFF gain FF
+   */
+  public void updatePIDGains(double gainP, double gainI, double gainD,
+                             double zoneI, double gainFF) {
+    this.gainP = gainP;
+    this.gainI = gainI;
+    this.gainD = gainD;
+    this.zoneI = zoneI;
+    this.gainFF = gainFF;
+
+    this.pidController.setP(this.gainP);
+    this.pidController.setI(this.gainI);
+    this.pidController.setD(this.gainD);
+    this.pidController.setIZone(this.zoneI);
+    this.pidController.setFF(this.gainFF);
+    this.pidController.setOutputRange(-1, 1);
+    //TODO: Motor speed should be defined here and we should have better ways of looking that up.
   }
   
   @Override
@@ -78,13 +108,6 @@ public class DeviceCANSparkMax extends MotorPWM {
     if (command instanceof VelocityControlMotorCAN) {
       if (this.pidEnabled) {
         VelocityControlMotorCAN canCommand = (VelocityControlMotorCAN) command;
-        this.pidController.setP(canCommand.gainP);
-        this.pidController.setI(canCommand.gainI);
-        this.pidController.setD(canCommand.gainD);
-        this.pidController.setIZone(canCommand.zoneI);
-        this.pidController.setFF(canCommand.gainFF);
-        this.pidController.setOutputRange(-1, 1);
-
         this.pidController.setReference(
             canCommand.setpoint * canCommand.maxRPM, 
             ControlType.kVelocity

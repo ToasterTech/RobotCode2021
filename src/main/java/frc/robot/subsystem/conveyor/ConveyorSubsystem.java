@@ -35,11 +35,6 @@ public class ConveyorSubsystem extends RobotSubsystem<ConveyorModel> {
           new VelocityControlMotorCAN(
             "conveyorMotor", 
             -.25,
-            .000300,
-            .000000,
-            .00002,
-            .000025,
-            .000175,
             5700
           )
         );

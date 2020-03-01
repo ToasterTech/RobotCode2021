@@ -16,34 +16,17 @@ import java.util.Objects;
 public class VelocityControlMotorCAN extends DeviceOutputCommand {
   public final String deviceId;
   public final double setpoint;
-  public final double gainP;
-  public final double gainI;
-  public final double gainD;
-  public final double zoneI;
-  public final double gainFF;
   public final int maxRPM;
 
   /**
    * Set up gains and setpoing for velocity control.
    * @param deviceId device name
    * @param setpoint setpoint for velocity control
-   * @param gainP propotional gain
-   * @param gainI integral gain
-   * @param gainD differential gain
-   * @param zoneI integral gain zone
-   * @param gainFF feed forward gain
    * @param maxRPM max RPM of motor
    */
-  public VelocityControlMotorCAN(String deviceId, double setpoint,
-                                 double gainP, double gainI, double gainD,
-                                 double zoneI, double gainFF, int maxRPM) {
+  public VelocityControlMotorCAN(String deviceId, double setpoint, int maxRPM) {
     this.deviceId = deviceId;
     this.setpoint = setpoint;
-    this.gainP = gainP;
-    this.gainI = gainI;
-    this.gainD = gainD;
-    this.zoneI = zoneI;
-    this.gainFF = gainFF;
     this.maxRPM = maxRPM;
   }
 
@@ -54,12 +37,8 @@ public class VelocityControlMotorCAN extends DeviceOutputCommand {
     }
     VelocityControlMotorCAN otherVal = (VelocityControlMotorCAN) other;
     return (this.setpoint == otherVal.setpoint
-      && this.deviceId == otherVal.deviceId 
-      && this.gainP == otherVal.gainP
-      && this.gainI == otherVal.gainI
-      && this.gainD == otherVal.gainD
-      && this.zoneI == otherVal.zoneI
-      && this.gainFF == otherVal.gainFF);
+      && this.deviceId == otherVal.deviceId
+      && this.maxRPM == otherVal.maxRPM);
   }
 
   @Override
@@ -67,11 +46,7 @@ public class VelocityControlMotorCAN extends DeviceOutputCommand {
     return Objects.hash(
       this.setpoint, 
       this.deviceId,
-      this.gainP,
-      this.gainI,
-      this.gainD,
-      this.zoneI,
-      this.gainFF
+      this.maxRPM
     );
   }
 

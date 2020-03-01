@@ -37,11 +37,6 @@ public class ShooterSubsystem extends RobotSubsystem<ShooterModel> {
             new VelocityControlMotorCAN(
               "shooterMotor", 
               -1,
-              .000330,
-              .000000,
-              .00002,
-              .000025,
-              .000175,
               5700
             )
           );
