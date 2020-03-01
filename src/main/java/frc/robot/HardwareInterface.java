@@ -12,6 +12,7 @@ import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 import edu.wpi.first.wpilibj.Joystick;
 import frc.robot.devices.commands.DeviceOutputCommand;
+import frc.robot.devices.input.CurrentTime;
 import frc.robot.devices.input.DeviceInput;
 import frc.robot.devices.input.gamepad.GamepadInput;
 import frc.robot.devices.output.DeviceCANSparkMax;
@@ -60,6 +61,7 @@ public class HardwareInterface extends BaseHardwareInterface {
 
     this.outputMap.put("shooterMotor", shooterMotor);
     this.inputMap.put("shooterEncoderVelocity", shooterMotor.getEncoderVelocityInput());
+    this.inputMap.put("currentTime", new CurrentTime());
 
     DeviceCANSparkMax conveyorMotor = new DeviceCANSparkMax(3, MotorType.kBrushless);
     // Probably need to tune this some 

@@ -64,9 +64,11 @@ public class TestHardwareInterface {
     HardwareInterfaceMock testHW = new HardwareInterfaceMock(gamepadTest);
 
     // Because of type of erasure we have to be careful here
+    // CHECKSTYLE.OFF
     HashMap<String,InputContainer<?>> inputValueMap = (
         (HashMap<String,InputContainer<?>>) testHW.getInputValueMap().get("driverGamepad").getValue()
     );
+    // CHECKSTYLE.ON
     for (Map.Entry<String, InputContainer<?>> entry: inputValueMap.entrySet()) {
       assertEquals(entry.getValue(), gamepadTest.getValue().getValue().get(entry.getKey()));
     }

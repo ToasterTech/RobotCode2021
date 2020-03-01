@@ -7,11 +7,9 @@
 
 package frc.robot;
 
-import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.devices.commands.DeviceOutputCommand;
-import frc.robot.devices.commands.SolenoidCommand;
 import frc.robot.subsystem.conveyor.ConveyorSubsystem;
 import frc.robot.subsystem.conveyor.models.ConveyorSystemModel;
 import frc.robot.subsystem.drive.DriveSubsystem;
@@ -20,7 +18,6 @@ import frc.robot.subsystem.shooter.ShooterSubsystem;
 import frc.robot.subsystem.shooter.models.ShooterSubsystemModel;
 import frc.robot.util.InputContainer;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
@@ -101,6 +98,7 @@ public class Robot extends TimedRobot {
     SmartDashboard.putNumber("RightTrigger", (double)inputMap.get("driverRightTrigger").getValue());
     SmartDashboard.putNumber("ShooterSpeed", (double)inputMap.get("shooterEncoderVelocity").getValue());
     SmartDashboard.putNumber("ConveyorSpeed", (double)inputMap.get("conveyorEncoderVelocity").getValue());
+    SmartDashboard.putNumber("ConveyorSpeed", (double)inputMap.get("currentTime").getValue());
 
     hardwareInterface.run(
         //Don't worry about this code, I know it is confusing, but it does make sense
