@@ -14,6 +14,7 @@ import edu.wpi.first.wpilibj.Joystick;
 import frc.robot.devices.commands.DeviceOutputCommand;
 import frc.robot.devices.input.CurrentTime;
 import frc.robot.devices.input.DeviceInput;
+import frc.robot.devices.input.LimitSwitch;
 import frc.robot.devices.input.gamepad.GamepadInput;
 import frc.robot.devices.output.DeviceCANSparkMax;
 import frc.robot.devices.output.DeviceOutput;
@@ -44,11 +45,16 @@ public class HardwareInterface extends BaseHardwareInterface {
     this.outputMap.put("rightMotor1", new DevicePWMTalonSRX(3));
     this.outputMap.put("rightMotor2", new DevicePWMTalonSRX(4));
 
+    this.outputMap.put("hangerMotor", new DevicePWMTalonSRX(5));
+    this.outputMap.put("hangerLock", new DeviceSolenoid(1));
+    this.inputMap.put("hangerSwitch", new LimitSwitch(0));
+
+
     this.outputMap.put("intakeStop", new DeviceSolenoid(0));
     this.outputMap.put("intakeDrop", new DeviceSolenoid(2));
 
     DeviceCANSparkMax shooterMotor = new DeviceCANSparkMax(2, MotorType.kBrushless, Arrays.asList(
-        new FollowerMotorCAN(new CANSparkMax(1, MotorType.kBrushless))
+        new FollowerMotorCAN(new CANSparkMax(1, MotorType.kBrushless), true)
     ));
     // Probably need to tune this some 
     shooterMotor.setupPID(

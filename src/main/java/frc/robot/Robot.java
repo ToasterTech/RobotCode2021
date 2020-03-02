@@ -10,6 +10,9 @@ package frc.robot;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.devices.commands.DeviceOutputCommand;
+import frc.robot.devices.commands.GenericMotorPWM;
+import frc.robot.devices.commands.SolenoidCommand;
+import frc.robot.devices.commands.SolenoidCommand.SolenoidState;
 import frc.robot.subsystem.conveyor.ConveyorSubsystem;
 import frc.robot.subsystem.conveyor.models.ConveyorSystemModel;
 import frc.robot.subsystem.drive.DriveSubsystem;
@@ -18,6 +21,7 @@ import frc.robot.subsystem.shooter.ShooterSubsystem;
 import frc.robot.subsystem.shooter.models.ShooterSubsystemModel;
 import frc.robot.util.InputContainer;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
@@ -68,12 +72,9 @@ public class Robot extends TimedRobot {
   public void teleopPeriodic() {
     List<DeviceOutputCommand> shooterCommands;
     List<DeviceOutputCommand> conveyorCommands;
+    List<DeviceOutputCommand> hangerCommands = new ArrayList<DeviceOutputCommand>();
 
     HashMap<String, InputContainer<?>> inputMap = hardwareInterface.getInputValueMap();
-
-    List<DeviceOutputCommand> driveMotorCommands = this.driveSubsystem.run(
-        new DifferentialDriveModel(0, 0)
-    );
 
     // This is temporary we need a better way of addressing this
     if ((boolean)inputMap.get("driverLeftShoulder").getValue()) {
@@ -85,11 +86,24 @@ public class Robot extends TimedRobot {
           new ShooterSubsystemModel(ShooterSubsystemModel.ShooterState.STOPPED)
       );
     }
+
+    if ((boolean)inputMap.get("driverYButton").getValue()) {
+      hangerCommands.add(new GenericMotorPWM("hangerMotor", -.6));
+      hangerCommands.add(new SolenoidCommand("hangerLock", SolenoidCommand.SolenoidState.OPEN));
+    } else if ((boolean)inputMap.get("driverAButton").getValue()) {
+      hangerCommands.add(new GenericMotorPWM("hangerMotor", .6));
+      hangerCommands.add(new SolenoidCommand("hangerLock", SolenoidCommand.SolenoidState.OPEN));
+    } else {
+      hangerCommands.add(new GenericMotorPWM("hangerMotor", 0.0));
+      hangerCommands.add(new SolenoidCommand("hangerLock", SolenoidCommand.SolenoidState.CLOSE));
+    }
+
     conveyorCommands = this.conveyorSystem.run(
         new ConveyorSystemModel(
-          ((boolean)inputMap.get("driverRightShoulder").getValue()) ? ConveyorSystemModel.IntakeState.INTAKE : ConveyorSystemModel.IntakeState.STOPPED,
+          ((boolean)inputMap.get("driverRightShoulder").getValue()) ? ConveyorSystemModel.IntakeState.INTAKE : (
+            ((boolean)inputMap.get("driverXButton").getValue()) ? ConveyorSystemModel.IntakeState.OUTTAKE : ConveyorSystemModel.IntakeState.STOPPED),
           ((double)inputMap.get("driverRightTrigger").getValue() > .5) ? ConveyorSystemModel.IntakePosition.DOWN : ConveyorSystemModel.IntakePosition.UP,
-          ((boolean)inputMap.get("driverLeftShoulder").getValue()) ? ConveyorSystemModel.ShooterBlockState.OPEN : ConveyorSystemModel.ShooterBlockState.CLOSE
+          ((double)inputMap.get("driverLeftTrigger").getValue() > .5) ? ConveyorSystemModel.ShooterBlockState.OPEN : ConveyorSystemModel.ShooterBlockState.CLOSE
         )
     );
     SmartDashboard.putBoolean("RightShoulder", (boolean)inputMap.get("driverRightShoulder").getValue());
@@ -98,12 +112,21 @@ public class Robot extends TimedRobot {
     SmartDashboard.putNumber("RightTrigger", (double)inputMap.get("driverRightTrigger").getValue());
     SmartDashboard.putNumber("ShooterSpeed", (double)inputMap.get("shooterEncoderVelocity").getValue());
     SmartDashboard.putNumber("ConveyorSpeed", (double)inputMap.get("conveyorEncoderVelocity").getValue());
-    SmartDashboard.putNumber("ConveyorSpeed", (double)inputMap.get("currentTime").getValue());
+    SmartDashboard.putNumber("currentTime", (double)inputMap.get("currentTime").getValue());
+    SmartDashboard.putBoolean("hangerSwitch", (boolean)inputMap.get("hangerSwitch").getValue());
 
+
+    List<DeviceOutputCommand> driveMotorCommands = this.driveSubsystem.run(
+        new DifferentialDriveModel(
+          (double)inputMap.get("driverLeftAxisY").getValue() * 0.5,
+          (double)inputMap.get("driverRightAxisY").getValue() * 0.5
+        )
+    );
     hardwareInterface.run(
         //Don't worry about this code, I know it is confusing, but it does make sense
         Stream.of(
-            // driveMotorCommands,
+            hangerCommands,
+            driveMotorCommands,
             shooterCommands, 
             conveyorCommands)
           .flatMap(Collection::stream)

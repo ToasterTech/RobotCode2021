@@ -35,9 +35,10 @@ public class TestShooterSubsystem {
         {
           new ShooterSubsystemModel(ShooterSubsystemModel.ShooterState.SHOOT_DEFAULT), 
           Arrays.asList(
+            //new VelocityControlMotorCAN(
             new VelocityControlMotorCAN(
               "shooterMotor", 
-              -1,
+              -1.0,
               5700
             )
           )

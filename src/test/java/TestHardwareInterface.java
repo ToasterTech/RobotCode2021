@@ -53,6 +53,7 @@ public class TestHardwareInterface {
     Joystick testJoystick = Mockito.mock(Joystick.class);
     Mockito.doReturn(true).when(testJoystick).getRawButton(6);
     Mockito.doReturn(false).when(testJoystick).getRawButton(5);
+    Mockito.doReturn(true).when(testJoystick).getRawButton(3);
 
     Mockito.when(testJoystick.getRawAxis(0)).thenReturn(1.0);
     Mockito.when(testJoystick.getRawAxis(1)).thenReturn(-1.0);
@@ -75,6 +76,8 @@ public class TestHardwareInterface {
     Boolean driveLeftTrigger = (boolean)testHW.getInputValueMap().get("driverLeftShoulder").getValue();
     Boolean driveRightTrigger = (boolean)testHW.getInputValueMap().get("driverRightShoulder").getValue();
 
+    Boolean driveXButton = (boolean)testHW.getInputValueMap().get("driverXButton").getValue();
+
     final double leftJoyX = (double)testHW.getInputValueMap().get("driverLeftAxisX").getValue();
     final double leftJoyY = (double)testHW.getInputValueMap().get("driverLeftAxisY").getValue();
     final double rightJoyX = (double)testHW.getInputValueMap().get("driverRightAxisX").getValue();
@@ -82,6 +85,7 @@ public class TestHardwareInterface {
 
     assertEquals(true, driveLeftTrigger);
     assertEquals(false, driveRightTrigger);
+    assertEquals(true, driveXButton);
     assertEquals(1.0, leftJoyX, 0.0001);
     assertEquals(-1.0, leftJoyY, 0.0001);
     assertEquals(.5, rightJoyX, 0.0001);

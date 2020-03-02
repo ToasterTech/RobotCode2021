@@ -49,6 +49,10 @@ public class GamepadInput implements DeviceInput<HashMap<String, InputContainer<
 
     this.addGamepadComponent("left", new GamepadButton(this.joystick, 6, "Shoulder"));
     this.addGamepadComponent("right", new GamepadButton(this.joystick, 5, "Shoulder"));
+    this.addGamepadComponent("y", new GamepadButton(this.joystick, 4, "Button"));
+    this.addGamepadComponent("x", new GamepadButton(this.joystick, 3, "Button"));
+    this.addGamepadComponent("b", new GamepadButton(this.joystick, 2, "Button"));
+    this.addGamepadComponent("a", new GamepadButton(this.joystick, 1, "Button"));
 
   }
 

@@ -26,8 +26,8 @@ public class DriveSubsystem extends RobotSubsystem<DriveModel> {
     if (input instanceof DifferentialDriveModel) {
       DifferentialDriveModel differentialDriveModel = (DifferentialDriveModel) input;
       return Arrays.asList(
-        new GenericMotorPWM("leftMotor1", differentialDriveModel.left),
-        new GenericMotorPWM("leftMotor2", differentialDriveModel.left),
+        new GenericMotorPWM("leftMotor1", -differentialDriveModel.left),
+        new GenericMotorPWM("leftMotor2", -differentialDriveModel.left),
         new GenericMotorPWM("rightMotor1", differentialDriveModel.right),
         new GenericMotorPWM("rightMotor2", differentialDriveModel.right)
       );
