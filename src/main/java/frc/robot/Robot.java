@@ -17,6 +17,8 @@ import frc.robot.subsystem.conveyor.ConveyorSubsystem;
 import frc.robot.subsystem.conveyor.models.ConveyorSystemModel;
 import frc.robot.subsystem.drive.DriveSubsystem;
 import frc.robot.subsystem.drive.models.DifferentialDriveModel;
+import frc.robot.subsystem.hanger.HangerSubsystem;
+import frc.robot.subsystem.hanger.models.HangerSystemModel;
 import frc.robot.subsystem.shooter.ShooterSubsystem;
 import frc.robot.subsystem.shooter.models.ShooterSubsystemModel;
 import frc.robot.util.InputContainer;
@@ -39,7 +41,7 @@ public class Robot extends TimedRobot {
   private DriveSubsystem driveSubsystem;
   private ShooterSubsystem shooterSubsystem;
   private ConveyorSubsystem conveyorSystem;
-
+  private HangerSubsystem hangerSubystem;
   private HardwareInterface hardwareInterface;
 
 
@@ -52,6 +54,8 @@ public class Robot extends TimedRobot {
     this.driveSubsystem = new DriveSubsystem();
     this.shooterSubsystem = new ShooterSubsystem();
     this.conveyorSystem = new ConveyorSubsystem();
+    this.hangerSubystem = new HangerSubsystem();
+
     this.hardwareInterface = new HardwareInterface();
   }
 
@@ -72,7 +76,7 @@ public class Robot extends TimedRobot {
   public void teleopPeriodic() {
     List<DeviceOutputCommand> shooterCommands;
     List<DeviceOutputCommand> conveyorCommands;
-    List<DeviceOutputCommand> hangerCommands = new ArrayList<DeviceOutputCommand>();
+    List<DeviceOutputCommand> hangerCommands;
 
     HashMap<String, InputContainer<?>> inputMap = hardwareInterface.getInputValueMap();
 
@@ -88,14 +92,11 @@ public class Robot extends TimedRobot {
     }
 
     if ((boolean)inputMap.get("driverYButton").getValue()) {
-      hangerCommands.add(new GenericMotorPWM("hangerMotor", -.6));
-      hangerCommands.add(new SolenoidCommand("hangerLock", SolenoidCommand.SolenoidState.OPEN));
+      hangerCommands = this.hangerSubystem.run(new HangerSystemModel(HangerSystemModel.HangerState.RAISE));
     } else if ((boolean)inputMap.get("driverAButton").getValue()) {
-      hangerCommands.add(new GenericMotorPWM("hangerMotor", .6));
-      hangerCommands.add(new SolenoidCommand("hangerLock", SolenoidCommand.SolenoidState.OPEN));
+      hangerCommands = this.hangerSubystem.run(new HangerSystemModel(HangerSystemModel.HangerState.LOWER));
     } else {
-      hangerCommands.add(new GenericMotorPWM("hangerMotor", 0.0));
-      hangerCommands.add(new SolenoidCommand("hangerLock", SolenoidCommand.SolenoidState.CLOSE));
+      hangerCommands = this.hangerSubystem.run(new HangerSystemModel(HangerSystemModel.HangerState.STOPPED));
     }
 
     conveyorCommands = this.conveyorSystem.run(
@@ -106,15 +107,6 @@ public class Robot extends TimedRobot {
           ((double)inputMap.get("driverLeftTrigger").getValue() > .5) ? ConveyorSystemModel.ShooterBlockState.OPEN : ConveyorSystemModel.ShooterBlockState.CLOSE
         )
     );
-    SmartDashboard.putBoolean("RightShoulder", (boolean)inputMap.get("driverRightShoulder").getValue());
-    SmartDashboard.putBoolean("LeftShoulder", (boolean)inputMap.get("driverLeftShoulder").getValue());
-    SmartDashboard.putNumber("LeftTrigger", (double)inputMap.get("driverLeftTrigger").getValue());
-    SmartDashboard.putNumber("RightTrigger", (double)inputMap.get("driverRightTrigger").getValue());
-    SmartDashboard.putNumber("ShooterSpeed", (double)inputMap.get("shooterEncoderVelocity").getValue());
-    SmartDashboard.putNumber("ConveyorSpeed", (double)inputMap.get("conveyorEncoderVelocity").getValue());
-    SmartDashboard.putNumber("currentTime", (double)inputMap.get("currentTime").getValue());
-    SmartDashboard.putBoolean("hangerSwitch", (boolean)inputMap.get("hangerSwitch").getValue());
-
 
     List<DeviceOutputCommand> driveMotorCommands = this.driveSubsystem.run(
         new DifferentialDriveModel(
@@ -132,6 +124,15 @@ public class Robot extends TimedRobot {
           .flatMap(Collection::stream)
           .collect(Collectors.toList())
     );
+
+    SmartDashboard.putBoolean("RightShoulder", (boolean)inputMap.get("driverRightShoulder").getValue());
+    SmartDashboard.putBoolean("LeftShoulder", (boolean)inputMap.get("driverLeftShoulder").getValue());
+    SmartDashboard.putNumber("LeftTrigger", (double)inputMap.get("driverLeftTrigger").getValue());
+    SmartDashboard.putNumber("RightTrigger", (double)inputMap.get("driverRightTrigger").getValue());
+    SmartDashboard.putNumber("ShooterSpeed", (double)inputMap.get("shooterEncoderVelocity").getValue());
+    SmartDashboard.putNumber("ConveyorSpeed", (double)inputMap.get("conveyorEncoderVelocity").getValue());
+    SmartDashboard.putNumber("currentTime", (double)inputMap.get("currentTime").getValue());
+    SmartDashboard.putBoolean("hangerSwitch", (boolean)inputMap.get("hangerSwitch").getValue());
   }
 
   @Override
