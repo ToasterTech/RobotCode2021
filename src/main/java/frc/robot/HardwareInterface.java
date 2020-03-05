@@ -16,6 +16,7 @@ import frc.robot.devices.input.CurrentTime;
 import frc.robot.devices.input.DeviceInput;
 import frc.robot.devices.input.LimitSwitch;
 import frc.robot.devices.input.gamepad.GamepadInput;
+import frc.robot.devices.input.gamepad.JoystickInput;
 import frc.robot.devices.output.DeviceCANSparkMax;
 import frc.robot.devices.output.DeviceOutput;
 import frc.robot.devices.output.DevicePWMTalonSRX;
@@ -85,6 +86,11 @@ public class HardwareInterface extends BaseHardwareInterface {
     GamepadInput gamepad = new GamepadInput("driver", new Joystick(1));
     this.inputMap.put("driverGamepad", gamepad);
     this.inputMap.putAll(gamepad.getDeviceMap());
+
+    JoystickInput joystick = new JoystickInput("operator", new Joystick(0));
+    this.inputMap.put("operator", joystick);
+    this.inputMap.putAll(joystick.getDeviceMap());
+
   }
 
   /**

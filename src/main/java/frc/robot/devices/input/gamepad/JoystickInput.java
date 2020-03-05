@@ -20,40 +20,40 @@ import org.apache.commons.lang3.StringUtils;
 
 //TODO: The wildcard type parameter is nasty and leads to unchecked exceptions, which are fine 
 // because we actually know what they are, but we should avoid anyway.
+//TODO: This should be in a base class.
 /**
- * Playstation Controller.
+ * Joystick.
  */
-public class GamepadInput implements DeviceInput<HashMap<String, InputContainer<?>>> {
+public class JoystickInput implements DeviceInput<HashMap<String, InputContainer<?>>> {
   private Joystick joystick;
   private HashMap<String, GamepadInputComponent<?>> joystickMap;
   private String name;
 
   /**
-   * Create a playstation controller. 
+   * Create a playstation controller.
    * 
    * @param joystick joystick reference
    */
-  public GamepadInput(String name, Joystick joystick) {
+  public JoystickInput(String name, Joystick joystick) {
     this.joystick = joystick;
     this.joystickMap = new HashMap<String, GamepadInputComponent<?>>();
     this.name = name;
 
-    //TODO: These mappings are most certainly wrong.
-    this.addGamepadComponent("left", new GamepadAxis(this.joystick, 0, "AxisX"));
-    this.addGamepadComponent("left", new GamepadAxis(this.joystick, 1, "AxisY"));
-    this.addGamepadComponent("right", new GamepadAxis(this.joystick, 4, "AxisX"));
-    this.addGamepadComponent("right", new GamepadAxis(this.joystick, 5, "AxisY"));
+    // TODO: These mappings are most certainly wrong.
+    this.addGamepadComponent("joystick", new GamepadAxis(this.joystick, 0, "AxisX"));
+    this.addGamepadComponent("joystick", new GamepadAxis(this.joystick, 1, "AxisY"));
+    this.addGamepadComponent("joystick", new GamepadAxis(this.joystick, 2, "Twist"));
 
-    this.addGamepadComponent("left", new GamepadAxis(this.joystick, 2, "Trigger"));
-    this.addGamepadComponent("right", new GamepadAxis(this.joystick, 3, "Trigger"));
+    this.addGamepadComponent("joystick", new GamepadButton(this.joystick, 0, "Trigger"));
+    this.addGamepadComponent("joystick", new GamepadButton(this.joystick, 1, "TopLeftButton"));
+    this.addGamepadComponent("joystick", new GamepadButton(this.joystick, 2, "TopRightButton"));
+    this.addGamepadComponent("joystick", new GamepadButton(this.joystick, 3, "TopUpperButton"));
+    this.addGamepadComponent("joystick", new GamepadButton(this.joystick, 4, "TopLowerButton"));
 
-    this.addGamepadComponent("left", new GamepadButton(this.joystick, 6, "Shoulder"));
-    this.addGamepadComponent("right", new GamepadButton(this.joystick, 5, "Shoulder"));
-    this.addGamepadComponent("y", new GamepadButton(this.joystick, 4, "Button"));
-    this.addGamepadComponent("x", new GamepadButton(this.joystick, 3, "Button"));
-    this.addGamepadComponent("b", new GamepadButton(this.joystick, 2, "Button"));
-    this.addGamepadComponent("a", new GamepadButton(this.joystick, 1, "Button"));
-    this.addGamepadComponent("dpad", new GamepadPOV(this.joystick, 1, "POV"));
+    this.addGamepadComponent("base", new GamepadButton(this.joystick, 5, "LeftUpperButton"));
+    this.addGamepadComponent("base", new GamepadButton(this.joystick, 6, "LeftLowerButton"));
+    this.addGamepadComponent("base", new GamepadButton(this.joystick, 7, "RightUpperButton"));
+    this.addGamepadComponent("base", new GamepadButton(this.joystick, 8, "RightLowerButton"));
 
   }
 
@@ -63,15 +63,15 @@ public class GamepadInput implements DeviceInput<HashMap<String, InputContainer<
 
   public InputContainer<HashMap<String, InputContainer<?>>> getValue() {
     HashMap<String, InputContainer<?>> inputValueMap = new HashMap<String, InputContainer<?>>();
-    for (Map.Entry<String, GamepadInputComponent<?>> entry: this.joystickMap.entrySet()) {
+    for (Map.Entry<String, GamepadInputComponent<?>> entry : this.joystickMap.entrySet()) {
       inputValueMap.put(entry.getKey(), entry.getValue().getValue());
     }
-    return new SimpleInputContainer<HashMap<String,InputContainer<?>>>(inputValueMap);
+    return new SimpleInputContainer<HashMap<String, InputContainer<?>>>(inputValueMap);
   }
 
   public HashMap<String, GamepadInputComponent<?>> getDeviceMap() {
     HashMap<String, GamepadInputComponent<?>> namedMap = new HashMap<String, GamepadInputComponent<?>>();
-    for (Map.Entry<String, GamepadInputComponent<?>> entry: this.joystickMap.entrySet()) {
+    for (Map.Entry<String, GamepadInputComponent<?>> entry : this.joystickMap.entrySet()) {
       namedMap.put(this.name + StringUtils.capitalize(entry.getKey()), entry.getValue());
     }
     return namedMap;
@@ -79,10 +79,10 @@ public class GamepadInput implements DeviceInput<HashMap<String, InputContainer<
 
   @Override
   public boolean equals(Object other) {
-    if (!(other instanceof GamepadInput)) {
+    if (!(other instanceof JoystickInput)) {
       return false;
     }
-    GamepadInput otherValue = (GamepadInput) other;
+    JoystickInput otherValue = (JoystickInput) other;
     return (this.joystickMap.equals(otherValue.joystickMap)
       && this.joystick.equals(otherValue.joystick) 
       && this.name.equals(otherValue.name));

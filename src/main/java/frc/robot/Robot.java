@@ -8,10 +8,10 @@
 package frc.robot;
 
 import edu.wpi.first.wpilibj.TimedRobot;
-import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import frc.robot.controllers.AutoModeController;
 import frc.robot.controllers.RobotStateController;
-import frc.robot.controllers.TeleopControllerV1;
+import frc.robot.controllers.TeleopControllerV2;
 import frc.robot.devices.commands.DeviceOutputCommand;
 import frc.robot.models.RobotModel;
 import frc.robot.subsystem.conveyor.ConveyorSubsystem;
@@ -22,9 +22,9 @@ import frc.robot.subsystem.hanger.HangerSubsystem;
 import frc.robot.subsystem.hanger.models.HangerSystemModel;
 import frc.robot.subsystem.shooter.ShooterSubsystem;
 import frc.robot.subsystem.shooter.models.ShooterSubsystemModel;
+import frc.robot.util.EncoderSpeedCheck;
 import frc.robot.util.InputContainer;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
@@ -62,15 +62,51 @@ public class Robot extends TimedRobot {
 
   @Override
   public void autonomousInit() {
+    this.controller = new AutoModeController(new EncoderSpeedCheck(200, this.shooterSubsystem.calculateSetpointSpeed(ShooterSubsystemModel.ShooterState.SHOOT_DEFAULT)));
+
   }
 
   @Override
   public void autonomousPeriodic() {
+    HashMap<String, InputContainer<?>> inputMap = hardwareInterface.getInputValueMap();
+    RobotModel model = controller.run(inputMap);
+
+    List<DeviceOutputCommand> shooterCommands = shooterSubsystem.run(model.shooterModel.orElse(new ShooterSubsystemModel(ShooterSubsystemModel.ShooterState.STOPPED)));
+    List<DeviceOutputCommand> conveyorCommands = conveyorSubsystem.run(model.conveyorModel.orElse(
+        new ConveyorSystemModel(
+          ConveyorSystemModel.IntakeState.STOPPED,
+          ConveyorSystemModel.IntakePosition.UP,
+          ConveyorSystemModel.ShooterBlockState.CLOSE
+        )
+    ));
+    List<DeviceOutputCommand> hangerCommands = hangerSubystem.run(model.hangerModel.orElse(new HangerSystemModel(HangerSystemModel.HangerState.STOPPED)));
+    List<DeviceOutputCommand> driveMotorCommands = driveSubsystem.run(model.driveModel.orElse(new DifferentialDriveModel(0.0, 0.0)));
+
+
+    hardwareInterface.run(
+        //Don't worry about this code, I know it is confusing, but it does make sense
+        Stream.of(
+            hangerCommands,
+            driveMotorCommands,
+            shooterCommands, 
+            conveyorCommands)
+          .flatMap(Collection::stream)
+          .collect(Collectors.toList())
+    );
+
+    SmartDashboard.putBoolean("RightShoulder", (boolean)inputMap.get("driverRightShoulder").getValue());
+    SmartDashboard.putBoolean("LeftShoulder", (boolean)inputMap.get("driverLeftShoulder").getValue());
+    SmartDashboard.putNumber("LeftTrigger", (double)inputMap.get("driverLeftTrigger").getValue());
+    SmartDashboard.putNumber("RightTrigger", (double)inputMap.get("driverRightTrigger").getValue());
+    SmartDashboard.putNumber("ShooterSpeed", (double)inputMap.get("shooterEncoderVelocity").getValue());
+    SmartDashboard.putNumber("ConveyorSpeed", (double)inputMap.get("conveyorEncoderVelocity").getValue());
+    SmartDashboard.putNumber("currentTime", (double)inputMap.get("currentTime").getValue());
+    SmartDashboard.putBoolean("hangerSwitch", (boolean)inputMap.get("hangerSwitch").getValue());
   }
 
   @Override
   public void teleopInit() {
-    this.controller = new TeleopControllerV1();
+    this.controller = new TeleopControllerV2(new EncoderSpeedCheck(200, this.shooterSubsystem.calculateSetpointSpeed(ShooterSubsystemModel.ShooterState.SHOOT_DEFAULT)));
   }
 
   @Override

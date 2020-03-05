@@ -13,6 +13,7 @@ import frc.robot.devices.commands.VelocityControlMotorCAN;
 import frc.robot.subsystem.RobotSubsystem;
 import frc.robot.subsystem.shooter.models.ShooterModel;
 import frc.robot.subsystem.shooter.models.ShooterSubsystemModel;
+import frc.robot.subsystem.shooter.models.ShooterSubsystemModel.ShooterState;
 
 import java.util.Arrays;
 import java.util.List;
@@ -29,11 +30,11 @@ public class ShooterSubsystem extends RobotSubsystem<ShooterModel> {
   //These methods should go somewhere else in better designed code, but we are in a rush.
   /**
    * Calculate the expected speed at the setpoint. 
-   * @param shooterSubsystemModel shooter state
+   * @param shooterState shooter state
    * @return return speed in RPM
    */
-  public double calculateSetpointSpeed(ShooterSubsystemModel shooterSubsystemModel) {
-    switch (shooterSubsystemModel.shooterState) {
+  public double calculateSetpointSpeed(ShooterState shooterState) {
+    switch (shooterState) {
       case STOPPED:
         return 0.0;
       case SHOOT_DEFAULT:
