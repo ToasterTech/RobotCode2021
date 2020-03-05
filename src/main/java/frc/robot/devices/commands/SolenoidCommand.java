@@ -33,7 +33,7 @@ public class SolenoidCommand extends DeviceOutputCommand {
       return false;
     }
     SolenoidCommand otherVal = (SolenoidCommand) other;
-    return this.state == otherVal.state & this.deviceId == otherVal.deviceId;
+    return this.state.equals(otherVal.state) & this.deviceId.equals(otherVal.deviceId);
   }
 
   @Override

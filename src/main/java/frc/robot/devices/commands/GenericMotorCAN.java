@@ -28,7 +28,7 @@ public class GenericMotorCAN extends DeviceOutputCommand {
       return false;
     }
     GenericMotorCAN otherVal = (GenericMotorCAN) other;
-    return this.setpoint == otherVal.setpoint && this.deviceId == otherVal.deviceId;
+    return this.setpoint == otherVal.setpoint && this.deviceId.equals(otherVal.deviceId);
   }
 
   @Override

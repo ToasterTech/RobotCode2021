@@ -30,11 +30,15 @@ public class ShooterSubsystemModel extends ShooterModel {
       return false;
     }
     ShooterSubsystemModel otherVal = (ShooterSubsystemModel) other;
-    return this.shooterState == otherVal.shooterState;
+    return this.shooterState.equals(otherVal.shooterState);
   }
 
   @Override
   public int hashCode() {
     return Objects.hash(this.shooterState);
+  }
+
+  public String toString() {
+    return "ShooterSubsystemModel(" + shooterState + ")";
   }
 }

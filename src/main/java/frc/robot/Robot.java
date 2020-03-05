@@ -8,11 +8,12 @@
 package frc.robot;
 
 import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import frc.robot.controllers.RobotStateController;
+import frc.robot.controllers.TeleopControllerV1;
 import frc.robot.devices.commands.DeviceOutputCommand;
-import frc.robot.devices.commands.GenericMotorPWM;
-import frc.robot.devices.commands.SolenoidCommand;
-import frc.robot.devices.commands.SolenoidCommand.SolenoidState;
+import frc.robot.models.RobotModel;
 import frc.robot.subsystem.conveyor.ConveyorSubsystem;
 import frc.robot.subsystem.conveyor.models.ConveyorSystemModel;
 import frc.robot.subsystem.drive.DriveSubsystem;
@@ -40,10 +41,10 @@ import java.util.stream.Stream;
 public class Robot extends TimedRobot {
   private DriveSubsystem driveSubsystem;
   private ShooterSubsystem shooterSubsystem;
-  private ConveyorSubsystem conveyorSystem;
+  private ConveyorSubsystem conveyorSubsystem;
   private HangerSubsystem hangerSubystem;
   private HardwareInterface hardwareInterface;
-
+  private RobotStateController controller;
 
   /**
    * This function is run when the robot is first started up and should be used
@@ -53,7 +54,7 @@ public class Robot extends TimedRobot {
   public void robotInit() {
     this.driveSubsystem = new DriveSubsystem();
     this.shooterSubsystem = new ShooterSubsystem();
-    this.conveyorSystem = new ConveyorSubsystem();
+    this.conveyorSubsystem = new ConveyorSubsystem();
     this.hangerSubystem = new HangerSubsystem();
 
     this.hardwareInterface = new HardwareInterface();
@@ -69,51 +70,26 @@ public class Robot extends TimedRobot {
 
   @Override
   public void teleopInit() {
-    
+    this.controller = new TeleopControllerV1();
   }
 
   @Override
   public void teleopPeriodic() {
-    List<DeviceOutputCommand> shooterCommands;
-    List<DeviceOutputCommand> conveyorCommands;
-    List<DeviceOutputCommand> hangerCommands;
-
     HashMap<String, InputContainer<?>> inputMap = hardwareInterface.getInputValueMap();
+    RobotModel model = controller.run(inputMap);
 
-    // This is temporary we need a better way of addressing this
-    if ((boolean)inputMap.get("driverLeftShoulder").getValue()) {
-      shooterCommands = this.shooterSubsystem.run(
-          new ShooterSubsystemModel(ShooterSubsystemModel.ShooterState.SHOOT_DEFAULT)
-      );
-    } else {
-      shooterCommands = this.shooterSubsystem.run(
-          new ShooterSubsystemModel(ShooterSubsystemModel.ShooterState.STOPPED)
-      );
-    }
-
-    if ((boolean)inputMap.get("driverYButton").getValue()) {
-      hangerCommands = this.hangerSubystem.run(new HangerSystemModel(HangerSystemModel.HangerState.RAISE));
-    } else if ((boolean)inputMap.get("driverAButton").getValue()) {
-      hangerCommands = this.hangerSubystem.run(new HangerSystemModel(HangerSystemModel.HangerState.LOWER));
-    } else {
-      hangerCommands = this.hangerSubystem.run(new HangerSystemModel(HangerSystemModel.HangerState.STOPPED));
-    }
-
-    conveyorCommands = this.conveyorSystem.run(
+    List<DeviceOutputCommand> shooterCommands = shooterSubsystem.run(model.shooterModel.orElse(new ShooterSubsystemModel(ShooterSubsystemModel.ShooterState.STOPPED)));
+    List<DeviceOutputCommand> conveyorCommands = conveyorSubsystem.run(model.conveyorModel.orElse(
         new ConveyorSystemModel(
-          ((boolean)inputMap.get("driverRightShoulder").getValue()) ? ConveyorSystemModel.IntakeState.INTAKE : (
-            ((boolean)inputMap.get("driverXButton").getValue()) ? ConveyorSystemModel.IntakeState.OUTTAKE : ConveyorSystemModel.IntakeState.STOPPED),
-          ((double)inputMap.get("driverRightTrigger").getValue() > .5) ? ConveyorSystemModel.IntakePosition.DOWN : ConveyorSystemModel.IntakePosition.UP,
-          ((double)inputMap.get("driverLeftTrigger").getValue() > .5) ? ConveyorSystemModel.ShooterBlockState.OPEN : ConveyorSystemModel.ShooterBlockState.CLOSE
+          ConveyorSystemModel.IntakeState.STOPPED,
+          ConveyorSystemModel.IntakePosition.UP,
+          ConveyorSystemModel.ShooterBlockState.CLOSE
         )
-    );
+    ));
+    List<DeviceOutputCommand> hangerCommands = hangerSubystem.run(model.hangerModel.orElse(new HangerSystemModel(HangerSystemModel.HangerState.STOPPED)));
+    List<DeviceOutputCommand> driveMotorCommands = driveSubsystem.run(model.driveModel.orElse(new DifferentialDriveModel(0.0, 0.0)));
 
-    List<DeviceOutputCommand> driveMotorCommands = this.driveSubsystem.run(
-        new DifferentialDriveModel(
-          (double)inputMap.get("driverLeftAxisY").getValue() * 0.5,
-          (double)inputMap.get("driverRightAxisY").getValue() * 0.5
-        )
-    );
+
     hardwareInterface.run(
         //Don't worry about this code, I know it is confusing, but it does make sense
         Stream.of(

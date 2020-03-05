@@ -37,7 +37,7 @@ public class VelocityControlMotorCAN extends DeviceOutputCommand {
     }
     VelocityControlMotorCAN otherVal = (VelocityControlMotorCAN) other;
     return (this.setpoint == otherVal.setpoint
-      && this.deviceId == otherVal.deviceId
+      && this.deviceId.equals(otherVal.deviceId)
       && this.maxRPM == otherVal.maxRPM);
   }
 

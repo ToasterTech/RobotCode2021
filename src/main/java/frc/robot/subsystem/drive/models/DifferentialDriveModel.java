@@ -34,4 +34,8 @@ public class DifferentialDriveModel extends DriveModel {
   public int hashCode() {
     return Objects.hash(this.left, this.right);
   }
+
+  public String toString() {
+    return "DifferentialDriveModel(" + left + "::" + right + ")";
+  }
 }

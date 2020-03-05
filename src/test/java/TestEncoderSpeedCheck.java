@@ -14,13 +14,13 @@ import org.junit.runners.Parameterized.Parameters;
 @RunWith(Parameterized.class)
 public class TestEncoderSpeedCheck {
 
-  private EncoderSpeedCheck speedChecker;
+  private double targetRange;
   private boolean withinRange;
   private double encoderValue;
   private double targetValue;
 
   public TestEncoderSpeedCheck(double range, double encoderValue, double targetValue, boolean result) {
-    this.speedChecker = new EncoderSpeedCheck(range);
+    this.targetRange = range;
     this.encoderValue = encoderValue;
     this.withinRange = result;
     this.targetValue = targetValue;
@@ -42,6 +42,7 @@ public class TestEncoderSpeedCheck {
 
   @Test
   public void testEncoderSpeedCheck() {
-    assertEquals(this.withinRange, this.speedChecker.isEncoderAtSpeed(this.encoderValue, this.targetValue));
+    EncoderSpeedCheck speedChecker = new EncoderSpeedCheck(this.targetRange, this.targetValue);
+    assertEquals(this.withinRange, speedChecker.isEncoderAtSpeed(this.encoderValue));
   }
 }

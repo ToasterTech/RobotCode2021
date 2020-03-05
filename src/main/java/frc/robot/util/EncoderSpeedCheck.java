@@ -5,12 +5,14 @@ package frc.robot.util;
  */
 public class EncoderSpeedCheck {
   private double deviation;
+  private double targetValue;
 
-  public EncoderSpeedCheck(double deviation) {
+  public EncoderSpeedCheck(double deviation, double targetValue) {
     this.deviation = deviation;
+    this.targetValue = targetValue;
   }
 
-  public boolean isEncoderAtSpeed(double encoderValue, double targetValue) {
+  public boolean isEncoderAtSpeed(double encoderValue) {
     return (targetValue - deviation <= encoderValue) && (encoderValue <= targetValue + deviation);
   }
 }

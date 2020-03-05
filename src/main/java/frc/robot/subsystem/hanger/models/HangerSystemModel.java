@@ -29,11 +29,15 @@ public class HangerSystemModel extends HangerModel {
       return false;
     }
     HangerSystemModel otherVal = (HangerSystemModel) other;
-    return this.hangerState == otherVal.hangerState;
+    return this.hangerState.equals(otherVal.hangerState);
   }
 
   @Override
   public int hashCode() {
     return Objects.hash(this.hangerState);
+  }
+
+  public String toString() {
+    return "HangerSystemModel(" + hangerState + ")";
   }
 }

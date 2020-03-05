@@ -42,11 +42,15 @@ public class ConveyorSystemModel extends ConveyorModel {
       return false;
     }
     ConveyorSystemModel otherVal = (ConveyorSystemModel)other;
-    return this.intakeState == otherVal.intakeState && this.intakePosition == otherVal.intakePosition && this.shooterBlockState == otherVal.shooterBlockState;
+    return this.intakeState.equals(otherVal.intakeState)  && this.intakePosition.equals(otherVal.intakePosition) && this.shooterBlockState.equals(otherVal.shooterBlockState);
   }
 
   @Override
   public int hashCode() {
     return Objects.hash(this.intakeState, this.intakePosition, this.shooterBlockState);
+  }
+
+  public String toString() {
+    return "ConveyorSystemModel(" + intakeState + "::" + intakePosition + "::" + shooterBlockState + ")";
   }
 }
