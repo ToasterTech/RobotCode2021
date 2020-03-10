@@ -13,7 +13,7 @@ public class EncoderSpeedCheck {
   }
 
   public boolean isEncoderAtSpeed(double encoderValue) {
-    return (targetValue - deviation <= encoderValue) && (encoderValue <= targetValue + deviation);
+    return (targetValue - deviation <= Math.abs(encoderValue)) && (Math.abs(encoderValue) <= targetValue + deviation);
   }
 }
   

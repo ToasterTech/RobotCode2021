@@ -47,7 +47,7 @@ public class TestTeleopV1Controller {
                                       .buildHangerModel(new HangerSystemModel(HangerSystemModel.HangerState.RAISE))
                                       .buildConveyorModel(
                                         new ConveyorSystemModel(ConveyorSystemModel.IntakeState.INTAKE, ConveyorSystemModel.IntakePosition.DOWN, ConveyorSystemModel.ShooterBlockState.OPEN))
-                                      .buildDriveModel(new DifferentialDriveModel(1.0, 1.0))
+                                      .buildDriveModel(new DifferentialDriveModel(.4, .4))
                                       .build();
 
     final HashMap<String, InputContainer<?>> test2 = new HashMap<String, InputContainer<?>>();
@@ -67,7 +67,7 @@ public class TestTeleopV1Controller {
                                       .buildHangerModel(new HangerSystemModel(HangerSystemModel.HangerState.LOWER))
                                       .buildConveyorModel(
                                         new ConveyorSystemModel(ConveyorSystemModel.IntakeState.INTAKE, ConveyorSystemModel.IntakePosition.DOWN, ConveyorSystemModel.ShooterBlockState.OPEN))
-                                      .buildDriveModel(new DifferentialDriveModel(1.0, 1.0))
+                                      .buildDriveModel(new DifferentialDriveModel(.4, .4))
                                       .build();
 
     final HashMap<String, InputContainer<?>> test3 = new HashMap<String, InputContainer<?>>();
@@ -87,7 +87,7 @@ public class TestTeleopV1Controller {
                                       .buildHangerModel(new HangerSystemModel(HangerSystemModel.HangerState.STOPPED))
                                       .buildConveyorModel(
                                         new ConveyorSystemModel(ConveyorSystemModel.IntakeState.INTAKE, ConveyorSystemModel.IntakePosition.UP, ConveyorSystemModel.ShooterBlockState.CLOSE))
-                                      .buildDriveModel(new DifferentialDriveModel(-1.0, 1.0))
+                                      .buildDriveModel(new DifferentialDriveModel(-.4, .4))
                                       .build();
 
     final HashMap<String, InputContainer<?>> test4 = new HashMap<String, InputContainer<?>>();
@@ -107,7 +107,7 @@ public class TestTeleopV1Controller {
                                       .buildHangerModel(new HangerSystemModel(HangerSystemModel.HangerState.STOPPED))
                                       .buildConveyorModel(
                                         new ConveyorSystemModel(ConveyorSystemModel.IntakeState.STOPPED, ConveyorSystemModel.IntakePosition.UP, ConveyorSystemModel.ShooterBlockState.CLOSE))
-                                      .buildDriveModel(new DifferentialDriveModel(-1.0, 1.0))
+                                      .buildDriveModel(new DifferentialDriveModel(-.4, .4))
                                       .build();
 
     final HashMap<String, InputContainer<?>> test5 = new HashMap<String, InputContainer<?>>();
@@ -127,7 +127,7 @@ public class TestTeleopV1Controller {
                                       .buildHangerModel(new HangerSystemModel(HangerSystemModel.HangerState.STOPPED))
                                       .buildConveyorModel(
                                         new ConveyorSystemModel(ConveyorSystemModel.IntakeState.OUTTAKE, ConveyorSystemModel.IntakePosition.UP, ConveyorSystemModel.ShooterBlockState.CLOSE))
-                                      .buildDriveModel(new DifferentialDriveModel(-1.0, 1.0))
+                                      .buildDriveModel(new DifferentialDriveModel(-.4, .4))
                                       .build();
                                   
     return Arrays.asList(new Object[][] {

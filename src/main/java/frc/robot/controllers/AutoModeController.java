@@ -7,6 +7,8 @@
 
 package frc.robot.controllers;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+
 import frc.robot.models.RobotModel;
 import frc.robot.subsystem.drive.models.DifferentialDriveModel;
 import frc.robot.subsystem.shooter.models.ShooterSubsystemModel;
@@ -19,6 +21,7 @@ import java.util.Objects;
 import java.util.Optional;
 
 
+
 /**
  * A Control the robot in teleop, based on intial testing.
  */
@@ -29,8 +32,8 @@ public class AutoModeController extends RobotStateController {
   private EncoderSpeedCheck encoderSpeedCheckAuto;
 
   private static final double WAIT_TIME = 0.0;
-  private static final double SHOOT_TIME = 4.0;
-  private static final double DRIVE_TIME = 8.0;
+  private static final double SHOOT_TIME = 5.0 * 1000;
+  private static final double DRIVE_TIME = 1.1 * 1000;
 
 
   public enum AutomodeState {
@@ -50,6 +53,7 @@ public class AutoModeController extends RobotStateController {
     }
     if (currentTime > this.targetEndTime.get()) {
       this.autoState = AutomodeState.SHOOT;
+      targetEndTime = Optional.empty();
     }
     return new RobotModel.RobotModelBuilder()
                           .buildShooterModel(new ShooterSubsystemModel(ShooterState.SHOOT_DEFAULT))
@@ -60,8 +64,10 @@ public class AutoModeController extends RobotStateController {
     if (!targetEndTime.isPresent()) {
       targetEndTime = Optional.of(currentTime + SHOOT_TIME);
     }
+    SmartDashboard.putNumber("targetTime", (double)targetEndTime.get());
     if (currentTime > this.targetEndTime.get()) {
       this.autoState = AutomodeState.DRIVE_BACK;
+      targetEndTime = Optional.empty();
     }
     return new AutomaticShoot(this.encoderSpeedCheckAuto).run(inputMap);
   }
@@ -72,9 +78,10 @@ public class AutoModeController extends RobotStateController {
     }
     if (currentTime > this.targetEndTime.get()) {
       this.autoState = AutomodeState.STOP;
+      targetEndTime = Optional.empty();
     }
     return new RobotModel.RobotModelBuilder()
-                          .buildDriveModel(new DifferentialDriveModel(1.0, 1.0))
+                          .buildDriveModel(new DifferentialDriveModel(.6, .6))
                           .build();
   }
 
@@ -85,7 +92,7 @@ public class AutoModeController extends RobotStateController {
       case WAIT_TO_SHOOT: return this.waitToShoot((double) inputMap.get("currentTime").getValue());
       case SHOOT: return this.shoot((double) inputMap.get("currentTime").getValue(), inputMap);
       case DRIVE_BACK: return this.driveBack((double) inputMap.get("currentTime").getValue());
-      case STOP: return new RobotModel.RobotModelBuilder().build();
+      case STOP: return new RobotModel.RobotModelBuilder().buildDriveModel(new DifferentialDriveModel(0,0)).build();
       default: new RobotModel.RobotModelBuilder().build();
     }
     return new RobotModel.RobotModelBuilder().build();

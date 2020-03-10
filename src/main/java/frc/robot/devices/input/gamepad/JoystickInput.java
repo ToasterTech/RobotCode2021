@@ -44,16 +44,16 @@ public class JoystickInput implements DeviceInput<HashMap<String, InputContainer
     this.addGamepadComponent("joystick", new GamepadAxis(this.joystick, 1, "AxisY"));
     this.addGamepadComponent("joystick", new GamepadAxis(this.joystick, 2, "Twist"));
 
-    this.addGamepadComponent("joystick", new GamepadButton(this.joystick, 0, "Trigger"));
-    this.addGamepadComponent("joystick", new GamepadButton(this.joystick, 1, "TopLeftButton"));
-    this.addGamepadComponent("joystick", new GamepadButton(this.joystick, 2, "TopRightButton"));
+    this.addGamepadComponent("joystick", new GamepadButton(this.joystick, 1, "Trigger"));
+    this.addGamepadComponent("joystick", new GamepadButton(this.joystick, 4, "TopLeftButton"));
+    this.addGamepadComponent("joystick", new GamepadButton(this.joystick, 5, "TopRightButton"));
     this.addGamepadComponent("joystick", new GamepadButton(this.joystick, 3, "TopUpperButton"));
-    this.addGamepadComponent("joystick", new GamepadButton(this.joystick, 4, "TopLowerButton"));
+    this.addGamepadComponent("joystick", new GamepadButton(this.joystick, 2, "TopLowerButton"));
 
-    this.addGamepadComponent("base", new GamepadButton(this.joystick, 5, "LeftUpperButton"));
-    this.addGamepadComponent("base", new GamepadButton(this.joystick, 6, "LeftLowerButton"));
-    this.addGamepadComponent("base", new GamepadButton(this.joystick, 7, "RightUpperButton"));
-    this.addGamepadComponent("base", new GamepadButton(this.joystick, 8, "RightLowerButton"));
+    this.addGamepadComponent("base", new GamepadButton(this.joystick, 6, "LeftUpperButton"));
+    this.addGamepadComponent("base", new GamepadButton(this.joystick, 7, "LeftLowerButton"));
+    this.addGamepadComponent("base", new GamepadButton(this.joystick, 11, "RightUpperButton"));
+    this.addGamepadComponent("base", new GamepadButton(this.joystick, 10, "RightLowerButton"));
 
   }
 

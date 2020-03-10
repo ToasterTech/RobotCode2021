@@ -10,6 +10,8 @@ package frc.robot;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
+import edu.wpi.cscore.UsbCamera;
+import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.wpilibj.Joystick;
 import frc.robot.devices.commands.DeviceOutputCommand;
 import frc.robot.devices.input.CurrentTime;
@@ -39,6 +41,10 @@ public class HardwareInterface extends BaseHardwareInterface {
    */
   public HardwareInterface() {
     super();
+    UsbCamera camera = CameraServer.getInstance().startAutomaticCapture();
+    camera.setFPS(6);
+    camera.setResolution(320, 240);
+
 
     // TODO: Make these addressed correctly
     this.outputMap.put("leftMotor1", new DevicePWMTalonSRX(1));
@@ -51,17 +57,17 @@ public class HardwareInterface extends BaseHardwareInterface {
     this.inputMap.put("hangerSwitch", new LimitSwitch(0));
 
 
-    this.outputMap.put("intakeStop", new DeviceSolenoid(0));
-    this.outputMap.put("intakeDrop", new DeviceSolenoid(2));
+    this.outputMap.put("intakeStop", new DeviceSolenoid(2));
+    this.outputMap.put("intakeDrop", new DeviceSolenoid(0));
 
     DeviceCANSparkMax shooterMotor = new DeviceCANSparkMax(2, MotorType.kBrushless, Arrays.asList(
         new FollowerMotorCAN(new CANSparkMax(1, MotorType.kBrushless), true)
     ));
     // Probably need to tune this some 
     shooterMotor.setupPID(
-        .000330,
+        .000290,
         .000000,
-        .00002,
+        .000008,
         .000025,
         .000175
     );
@@ -73,11 +79,11 @@ public class HardwareInterface extends BaseHardwareInterface {
     DeviceCANSparkMax conveyorMotor = new DeviceCANSparkMax(3, MotorType.kBrushless);
     // Probably need to tune this some 
     conveyorMotor.setupPID(
-        .000330,
+        .000180,
         .000000,
-        .00002,
-        .000025,
-        .000175
+        .000000,
+        .000000,
+        .000185
     );
 
     this.outputMap.put("conveyorMotor", conveyorMotor);

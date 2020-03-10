@@ -40,7 +40,7 @@ public class ConveyorSubsystem extends RobotSubsystem<ConveyorModel> {
       } else if (conveyorSystemModel.intakeState == ConveyorSystemModel.IntakeState.OUTTAKE) {
         motorCommand = new VelocityControlMotorCAN(
           "conveyorMotor", 
-          .25,
+          .32,
           5700
         );
       } else {

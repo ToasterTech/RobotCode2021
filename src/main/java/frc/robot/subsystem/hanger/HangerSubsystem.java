@@ -9,6 +9,7 @@ package frc.robot.subsystem.hanger;
 
 import frc.robot.devices.commands.DeviceOutputCommand;
 import frc.robot.devices.commands.GenericMotorCAN;
+import frc.robot.devices.commands.GenericMotorPWM;
 import frc.robot.devices.commands.SolenoidCommand;
 import frc.robot.subsystem.RobotSubsystem;
 import frc.robot.subsystem.hanger.models.HangerModel;
@@ -29,21 +30,21 @@ public class HangerSubsystem extends RobotSubsystem<HangerModel> {
     if (input instanceof HangerSystemModel) {
       HangerSystemModel conveyorSystemModel = (HangerSystemModel) input;
       if (conveyorSystemModel.hangerState == HangerSystemModel.HangerState.RAISE) {
-        motorCommand = new GenericMotorCAN("hangerMotor", -.6);
+        motorCommand = new GenericMotorPWM("hangerMotor", -.6);
         breakCommand = new SolenoidCommand("hangerLock", SolenoidCommand.SolenoidState.OPEN);
       } else if (conveyorSystemModel.hangerState == HangerSystemModel.HangerState.LOWER) {
-        motorCommand = new GenericMotorCAN("hangerMotor", .6);
+        motorCommand = new GenericMotorPWM("hangerMotor", .7);
         breakCommand = new SolenoidCommand("hangerLock", SolenoidCommand.SolenoidState.OPEN);
       } else if (conveyorSystemModel.hangerState == HangerSystemModel.HangerState.LOWER_FAST) {
-        motorCommand = new GenericMotorCAN("hangerMotor", 1.0);
+        motorCommand = new GenericMotorPWM("hangerMotor", 1.0);
         breakCommand = new SolenoidCommand("hangerLock", SolenoidCommand.SolenoidState.OPEN);
       } else {
-        motorCommand = new GenericMotorCAN("hangerMotor", 0.0);
+        motorCommand = new GenericMotorPWM("hangerMotor", 0.0);
         breakCommand = new SolenoidCommand("hangerLock", SolenoidCommand.SolenoidState.CLOSE);
       }
     } else {
       breakCommand = new SolenoidCommand("hangerLock", SolenoidCommand.SolenoidState.CLOSE);
-      motorCommand = new GenericMotorCAN("conveyorMotor", 0.0);
+      motorCommand = new GenericMotorPWM("conveyorMotor", 0.0);
     }
     return Arrays.asList(
       motorCommand,

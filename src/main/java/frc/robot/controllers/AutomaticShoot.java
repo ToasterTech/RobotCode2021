@@ -23,10 +23,18 @@ import java.util.Objects;
 public class AutomaticShoot extends RobotStateController {
   private EncoderSpeedCheck defaultTargetVelocity;
   private ShooterSubsystemModel.ShooterState shooterState;
+  private ConveyorSystemModel.IntakeState intakeState;
 
   public AutomaticShoot(EncoderSpeedCheck defaultTargetVelocity) {
     this.defaultTargetVelocity = defaultTargetVelocity;
     this.shooterState = ShooterSubsystemModel.ShooterState.SHOOT_DEFAULT;
+    this.intakeState = ConveyorSystemModel.IntakeState.INTAKE;
+  }
+
+  public AutomaticShoot(EncoderSpeedCheck defaultTargetVelocity, ConveyorSystemModel.IntakeState intakeState) {
+    this.defaultTargetVelocity = defaultTargetVelocity;
+    this.shooterState = ShooterSubsystemModel.ShooterState.SHOOT_DEFAULT;
+    this.intakeState = intakeState;
   }
 
   @Override
@@ -37,7 +45,7 @@ public class AutomaticShoot extends RobotStateController {
 
     if (this.defaultTargetVelocity.isEncoderAtSpeed((double) inputMap.get("shooterEncoderVelocity").getValue())) {
       model.buildConveyorModel(new ConveyorSystemModel(
-          ConveyorSystemModel.IntakeState.INTAKE,
+          this.intakeState,
           ConveyorSystemModel.IntakePosition.UP,
           ConveyorSystemModel.ShooterBlockState.OPEN
       ));
@@ -48,6 +56,8 @@ public class AutomaticShoot extends RobotStateController {
           ConveyorSystemModel.ShooterBlockState.CLOSE
       ));
     }
+    System.out.println(model);
+
     return model.build();
   }
 

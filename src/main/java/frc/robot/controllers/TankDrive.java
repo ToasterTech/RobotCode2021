@@ -20,18 +20,30 @@ import java.util.Objects;
 public class TankDrive extends RobotStateController {
   private String leftJoystickName;
   private String rightJoystickName;
+  private double currentValueLeft;
+  private double currentValueRight;
   
   public TankDrive(String leftJoystickName, String rightJoystickName) {
     this.leftJoystickName = leftJoystickName;
     this.rightJoystickName = rightJoystickName;
+    this.currentValueLeft = 0.0;
+    this.currentValueRight = 0.0;
+  }
+
+  public double limitChange(double target, double current, double maxDiff) {
+    double diff = target - current;
+    return current + ((Math.abs(diff) > maxDiff) ? maxDiff * Math.signum(diff) : diff);
   }
 
   @Override
   public RobotModel run(HashMap<String, InputContainer<?>> inputMap) {
+    this.currentValueLeft = this.limitChange((double)inputMap.get(this.leftJoystickName).getValue(), this.currentValueLeft, 0.4);
+    this.currentValueRight = this.limitChange((double)inputMap.get(this.rightJoystickName).getValue(), this.currentValueRight, 0.4);
+
     return new RobotModel.RobotModelBuilder()
                 .buildDriveModel(new DifferentialDriveModel(
-                  (double)inputMap.get(this.leftJoystickName).getValue(),
-                  (double)inputMap.get(this.rightJoystickName).getValue()
+                  this.currentValueLeft,
+                  this.currentValueRight
                 ))
                 .build();
   }

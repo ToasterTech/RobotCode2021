@@ -13,6 +13,7 @@ import frc.robot.subsystem.hanger.models.HangerSystemModel;
 import frc.robot.subsystem.shooter.models.ShooterSubsystemModel;
 import frc.robot.util.EncoderSpeedCheck;
 import frc.robot.util.InputContainer;
+import frc.robot.util.Toggle;
 
 import java.util.HashMap;
 import java.util.Objects;
@@ -23,10 +24,12 @@ import java.util.Objects;
 public class TeleopControllerV2 extends RobotStateController {
   private TankDrive tankDrive;
   private AutomaticShoot autoShooerController;
+  private Toggle joystickToggle;
 
   public TeleopControllerV2(EncoderSpeedCheck defaultTargetVelocity) {
     this.tankDrive = new TankDrive("driverLeftAxisY", "driverRightAxisY");
     this.autoShooerController = new AutomaticShoot(defaultTargetVelocity);
+    this.joystickToggle = new Toggle();
   }
 
   @Override
@@ -64,7 +67,7 @@ public class TeleopControllerV2 extends RobotStateController {
 
     //TODO: there was talk of making this a toggle, but still need to implement this. 
     ConveyorSystemModel.IntakePosition intakePosition;
-    if ((boolean)inputMap.get("operatorJoystickTrigger").getValue()) {
+    if (this.joystickToggle.run((boolean)inputMap.get("operatorJoystickTrigger").getValue())) {
       intakePosition = ConveyorSystemModel.IntakePosition.DOWN;
     }  else {
       intakePosition = ConveyorSystemModel.IntakePosition.UP;
