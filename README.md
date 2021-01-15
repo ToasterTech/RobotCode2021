@@ -1,5 +1,5 @@
-# RobotCode2020
-Robot Code For 2020 FRC Season. Based off the default timed robot, with additional gradle configuration to allow style checks and automated unit testing on pushes. 
+# RobotCode2021
+Robot Code For 2021 FRC Season. Based off the default timed robot, with additional gradle configuration to allow style checks and automated unit testing on pushes. 
 
 # Getting Started
 Follow instructions on WPIlib documentation to install development environment and required libaries:
@@ -21,7 +21,7 @@ or running the built in Test Robot Code option in vscode.
 
 
 # Reccomended Development Environment
-Reccomend using WPIlib FRC 2020 vscode with the following plugins if not already enabled:
+Reccomend using WPIlib FRC 2021 vscode with the following plugins if not already enabled:
   * Checkstyle for java https://github.com/jdneo/vscode-checkstyle
   * Language support for Java https://marketplace.visualstudio.com/items?itemName=redhat.java
 
