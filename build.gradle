@@ -1,6 +1,7 @@
 plugins {
     id "java"
     id "edu.wpi.first.GradleRIO" version "2021.1.2"
+    id 'checkstyle'
 }
 
 sourceCompatibility = JavaVersion.VERSION_11
@@ -35,6 +36,10 @@ deploy {
             directory = '/home/lvuser/deploy'
         }
     }
+}
+
+checkstyle {
+  maxWarnings = 0
 }
 
 // Set this to true to enable desktop support.

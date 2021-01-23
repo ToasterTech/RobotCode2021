@@ -24,12 +24,13 @@ import java.util.List;
 /**
  * Motor device for SparkMax.
 */
-public class DeviceCANSparkMax extends MotorPWM {
+public class DeviceCANSparkMax extends MotorCAN {
   private CANSparkMax controller;
   private CANPIDController pidController;
   private CANEncoder encoder;
   private boolean pidEnabled;
-  private List<FollowerMotorCAN> followers;
+  private List<DeviceCANSparkMax> followers;
+  private boolean reverse;
 
   private double gainP;
   private double gainI;
@@ -42,18 +43,27 @@ public class DeviceCANSparkMax extends MotorPWM {
    * @param channel can ID 
    * @param motorType motortype either brushed or brushless
    */
-  public DeviceCANSparkMax(int channel, MotorType motorType) {
+  public DeviceCANSparkMax(int channel, MotorType motorType, boolean reverse) {
     this.controller = new CANSparkMax(channel, motorType);
+    this.controller.setInverted(reverse);
     this.encoder = controller.getEncoder(EncoderType.kHallSensor, 4096);
     this.controller.restoreFactoryDefaults();
   }
 
-  public DeviceCANSparkMax(int channel, MotorType motorType, List<FollowerMotorCAN> followers) {
-    this(channel, motorType);
+  public DeviceCANSparkMax(int channel, MotorType motorType) {
+    this(channel, motorType, false);
+  }
+
+  public DeviceCANSparkMax(int channel, MotorType motorType, boolean reverse, List<DeviceCANSparkMax> followers) {
+    this(channel, motorType, reverse);
     this.followers = followers;
-    for (FollowerMotorCAN follower: this.followers) {
-      follower.follow(this.controller);
+    for (DeviceCANSparkMax follower: this.followers) {
+      follower.follow(this);
     }
+  }
+
+  public DeviceCANSparkMax(int channel, MotorType motorType, List<DeviceCANSparkMax> followers) {
+    this(channel, motorType, false, followers);
   }
 
   public EncoderVelocityInputCAN getEncoderVelocityInput() {
@@ -114,5 +124,15 @@ public class DeviceCANSparkMax extends MotorPWM {
         );
       }
     }
+  }
+
+  private CANSparkMax getController() {
+    return this.controller;
+  }
+
+  @Override
+  protected void follow(MotorCAN master) {
+    DeviceCANSparkMax masterSparkMax = (DeviceCANSparkMax) master;
+    this.controller.follow(masterSparkMax.getController(), this.reverse);
   }
 }

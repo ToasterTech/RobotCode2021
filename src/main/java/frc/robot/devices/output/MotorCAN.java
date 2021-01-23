@@ -11,4 +11,5 @@ package frc.robot.devices.output;
  * Add your docs here.
  */
 public abstract class MotorCAN extends DeviceOutput {
+  protected abstract void follow(MotorCAN master);
 }

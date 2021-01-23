@@ -7,7 +7,6 @@
 
 package frc.robot;
 
-import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 import edu.wpi.cscore.UsbCamera;
@@ -20,10 +19,10 @@ import frc.robot.devices.input.LimitSwitch;
 import frc.robot.devices.input.gamepad.GamepadInput;
 import frc.robot.devices.input.gamepad.JoystickInput;
 import frc.robot.devices.output.DeviceCANSparkMax;
+import frc.robot.devices.output.DeviceCANTalonFX;
 import frc.robot.devices.output.DeviceOutput;
 import frc.robot.devices.output.DevicePWMTalonSRX;
 import frc.robot.devices.output.DeviceSolenoid;
-import frc.robot.devices.output.FollowerMotorCAN;
 import frc.robot.util.InputContainer;
 
 import java.util.Arrays;
@@ -47,10 +46,11 @@ public class HardwareInterface extends BaseHardwareInterface {
 
 
     // TODO: Make these addressed correctly
-    this.outputMap.put("leftMotor1", new DevicePWMTalonSRX(1));
-    this.outputMap.put("leftMotor2", new DevicePWMTalonSRX(2));
-    this.outputMap.put("rightMotor1", new DevicePWMTalonSRX(3));
-    this.outputMap.put("rightMotor2", new DevicePWMTalonSRX(4));
+    // TODO: Since this is now can make these followers
+    this.outputMap.put("leftMotor1", new DeviceCANTalonFX(1));
+    this.outputMap.put("leftMotor2", new DeviceCANTalonFX(2));
+    this.outputMap.put("rightMotor1", new DeviceCANTalonFX(3));
+    this.outputMap.put("rightMotor2", new DeviceCANTalonFX(4));
 
     this.outputMap.put("hangerMotor", new DevicePWMTalonSRX(5));
     this.outputMap.put("hangerLock", new DeviceSolenoid(1));
@@ -60,8 +60,9 @@ public class HardwareInterface extends BaseHardwareInterface {
     this.outputMap.put("intakeStop", new DeviceSolenoid(2));
     this.outputMap.put("intakeDrop", new DeviceSolenoid(0));
 
+    // 
     DeviceCANSparkMax shooterMotor = new DeviceCANSparkMax(2, MotorType.kBrushless, Arrays.asList(
-        new FollowerMotorCAN(new CANSparkMax(1, MotorType.kBrushless), true)
+        new DeviceCANSparkMax(1, MotorType.kBrushless, true)
     ));
     // Probably need to tune this some 
     shooterMotor.setupPID(
