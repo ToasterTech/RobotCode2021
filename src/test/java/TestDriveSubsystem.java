@@ -1,6 +1,6 @@
 import static org.junit.Assert.assertEquals;
 
-import frc.robot.devices.commands.GenericMotorPWM;
+import frc.robot.devices.commands.GenericMotorCAN;
 import frc.robot.subsystem.drive.DriveSubsystem;
 import frc.robot.subsystem.drive.models.DifferentialDriveModel;
 
@@ -24,22 +24,22 @@ public class TestDriveSubsystem {
    * @param right right side of the drive train
    * @return
    */
-  public static List<GenericMotorPWM> buildExpectedMotorOutputs(double left, double right) {
+  public static List<GenericMotorCAN> buildExpectedMotorOutputs(double left, double right) {
     return Arrays.asList(
-      new GenericMotorPWM("leftMotor1", -left),
-      new GenericMotorPWM("leftMotor2", -left),
-      new GenericMotorPWM("rightMotor1", right),
-      new GenericMotorPWM("rightMotor2", right)
+      new GenericMotorCAN("leftMotor1", -left),
+      new GenericMotorCAN("leftMotor2", -left),
+      new GenericMotorCAN("rightMotor1", right),
+      new GenericMotorCAN("rightMotor2", right)
 
     );
   }
 
   private DifferentialDriveModel driveModel;
-  private List<GenericMotorPWM> expectedOutputs;
+  private List<GenericMotorCAN> expectedOutputs;
   private DriveSubsystem driveSubsystem;
 
   public TestDriveSubsystem(DifferentialDriveModel driveModel, 
-                            List<GenericMotorPWM> expectedOutputs) {
+                            List<GenericMotorCAN> expectedOutputs) {
     this.driveModel = driveModel;
     this.expectedOutputs = expectedOutputs;
     this.driveSubsystem = new DriveSubsystem();
@@ -54,7 +54,6 @@ public class TestDriveSubsystem {
         {new DifferentialDriveModel(-1, 1), buildExpectedMotorOutputs(-1, 1)},
         {new DifferentialDriveModel(1, -1), buildExpectedMotorOutputs(1, -1)} 
     });
-
   }
 
   @Test
