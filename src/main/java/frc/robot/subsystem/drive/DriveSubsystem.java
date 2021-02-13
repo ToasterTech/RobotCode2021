@@ -8,7 +8,7 @@
 package frc.robot.subsystem.drive;
 
 import frc.robot.devices.commands.DeviceOutputCommand;
-import frc.robot.devices.commands.GenericMotorPWM;
+import frc.robot.devices.commands.GenericMotorCAN;
 import frc.robot.subsystem.RobotSubsystem;
 import frc.robot.subsystem.drive.models.DifferentialDriveModel;
 import frc.robot.subsystem.drive.models.DriveModel;
@@ -26,10 +26,10 @@ public class DriveSubsystem extends RobotSubsystem<DriveModel> {
     if (input instanceof DifferentialDriveModel) {
       DifferentialDriveModel differentialDriveModel = (DifferentialDriveModel) input;
       return Arrays.asList(
-        new GenericMotorPWM("leftMotor1", -differentialDriveModel.left),
-        new GenericMotorPWM("leftMotor2", -differentialDriveModel.left),
-        new GenericMotorPWM("rightMotor1", differentialDriveModel.right),
-        new GenericMotorPWM("rightMotor2", differentialDriveModel.right)
+        new GenericMotorCAN("leftMotor1", -differentialDriveModel.left),
+        new GenericMotorCAN("leftMotor2", -differentialDriveModel.left),
+        new GenericMotorCAN("rightMotor1", differentialDriveModel.right),
+        new GenericMotorCAN("rightMotor2", differentialDriveModel.right)
       );
     }
     throw new IllegalArgumentException(

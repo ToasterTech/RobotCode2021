@@ -47,10 +47,10 @@ public class HardwareInterface extends BaseHardwareInterface {
 
     // TODO: Make these addressed correctly
     // TODO: Since this is now can make these followers
-    this.outputMap.put("leftMotor1", new DeviceCANTalonFX(1));
-    this.outputMap.put("leftMotor2", new DeviceCANTalonFX(2));
-    this.outputMap.put("rightMotor1", new DeviceCANTalonFX(3));
-    this.outputMap.put("rightMotor2", new DeviceCANTalonFX(4));
+    this.outputMap.put("leftMotor1", new DeviceCANTalonFX(4));
+    this.outputMap.put("leftMotor2", new DeviceCANTalonFX(5));
+    this.outputMap.put("rightMotor1", new DeviceCANTalonFX(6));
+    this.outputMap.put("rightMotor2", new DeviceCANTalonFX(7));
 
     this.outputMap.put("hangerMotor", new DevicePWMTalonSRX(5));
     this.outputMap.put("hangerLock", new DeviceSolenoid(1));
