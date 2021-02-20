@@ -37,8 +37,8 @@ public class TankDrive extends RobotStateController {
 
   @Override
   public RobotModel run(HashMap<String, InputContainer<?>> inputMap) {
-    this.currentValueLeft = this.limitChange((double)inputMap.get(this.leftJoystickName).getValue(), this.currentValueLeft, 0.4);
-    this.currentValueRight = this.limitChange((double)inputMap.get(this.rightJoystickName).getValue(), this.currentValueRight, 0.4);
+    this.currentValueLeft = this.limitChange((double)inputMap.get(this.leftJoystickName).getValue(), this.currentValueLeft, 0.01);
+    this.currentValueRight = this.limitChange((double)inputMap.get(this.rightJoystickName).getValue(), this.currentValueRight, 0.01);
 
     return new RobotModel.RobotModelBuilder()
                 .buildDriveModel(new DifferentialDriveModel(

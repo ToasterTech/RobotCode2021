@@ -54,10 +54,10 @@ public class TestTankDrive {
     test1_2.put("driverRightAxisY", new SimpleInputContainer<Double>(1.0));
 
     final RobotModel model1_1 = new RobotModel.RobotModelBuilder()
-                                      .buildDriveModel(new DifferentialDriveModel(.4, .4))
+                                      .buildDriveModel(new DifferentialDriveModel(.01, .01))
                                       .build();
     final RobotModel model1_2 = new RobotModel.RobotModelBuilder()
-                                      .buildDriveModel(new DifferentialDriveModel(.8, .8))
+                                      .buildDriveModel(new DifferentialDriveModel(.02, .02))
                                       .build();
 
     final HashMap<String, InputContainer<?>> test2_1 = new HashMap<String, InputContainer<?>>();                         
@@ -68,7 +68,7 @@ public class TestTankDrive {
     test2_2.put("driverRightAxisY", new SimpleInputContainer<Double>(-1.0));
 
     final RobotModel model2_1 = new RobotModel.RobotModelBuilder()
-                                      .buildDriveModel(new DifferentialDriveModel(.4, .4))
+                                      .buildDriveModel(new DifferentialDriveModel(.01, .01))
                                       .build();
     final RobotModel model2_2 = new RobotModel.RobotModelBuilder()
                                       .buildDriveModel(new DifferentialDriveModel(0.0, 0.0))
@@ -82,10 +82,10 @@ public class TestTankDrive {
     test3_2.put("driverRightAxisY", new SimpleInputContainer<Double>(.25));
 
     final RobotModel model3_1 = new RobotModel.RobotModelBuilder()
-                                      .buildDriveModel(new DifferentialDriveModel(.25, .25))
+                                      .buildDriveModel(new DifferentialDriveModel(.01, .01))
                                       .build();
     final RobotModel model3_2 = new RobotModel.RobotModelBuilder()
-                                      .buildDriveModel(new DifferentialDriveModel(0.25, 0.25))
+                                      .buildDriveModel(new DifferentialDriveModel(0.02, 0.02))
                                       .build();
                                   
     return Arrays.asList(new Object[][] {
@@ -96,7 +96,7 @@ public class TestTankDrive {
   }
 
   @Test
-  public void testTeleopControllerV1() {
+  public void testTankDrive() {
     
     TankDrive drive = new TankDrive("driverLeftAxisY", "driverRightAxisY");
     RobotModel results1 = drive.run(this.inputMap1);
