@@ -9,6 +9,7 @@ package frc.robot.controllers;
 
 import frc.robot.models.RobotModel;
 import frc.robot.models.RobotModel.RobotModelBuilder;
+import frc.robot.subsystem.conveyor.models.ConveyorModel;
 import frc.robot.subsystem.conveyor.models.ConveyorSystemModel;
 import frc.robot.subsystem.shooter.models.ShooterSubsystemModel;
 import frc.robot.util.EncoderSpeedCheck;
@@ -23,40 +24,24 @@ import java.util.Objects;
 public class AutomaticShoot extends RobotStateController {
   private EncoderSpeedCheck defaultTargetVelocity;
   private ShooterSubsystemModel.ShooterState shooterState;
-  private ConveyorSystemModel.IntakeState intakeState;
 
   public AutomaticShoot(EncoderSpeedCheck defaultTargetVelocity) {
     this.defaultTargetVelocity = defaultTargetVelocity;
     this.shooterState = ShooterSubsystemModel.ShooterState.SHOOT_DEFAULT;
-    this.intakeState = ConveyorSystemModel.IntakeState.INTAKE;
   }
 
-  public AutomaticShoot(EncoderSpeedCheck defaultTargetVelocity, ConveyorSystemModel.IntakeState intakeState) {
-    this.defaultTargetVelocity = defaultTargetVelocity;
-    this.shooterState = ShooterSubsystemModel.ShooterState.SHOOT_DEFAULT;
-    this.intakeState = intakeState;
-  }
 
   @Override
   public RobotModel run(HashMap<String, InputContainer<?>> inputMap) {
     RobotModelBuilder model = new RobotModel.RobotModelBuilder();
     
     model.buildShooterModel(new ShooterSubsystemModel(this.shooterState));
-
+    // TODO: Redo this with the new conveyor code
     if (this.defaultTargetVelocity.isEncoderAtSpeed((double) inputMap.get("shooterEncoderVelocity").getValue())) {
-      model.buildConveyorModel(new ConveyorSystemModel(
-          this.intakeState,
-          ConveyorSystemModel.IntakePosition.UP,
-          ConveyorSystemModel.ShooterBlockState.OPEN
-      ));
+      model.buildConveyorModel(new ConveyorSystemModel());
     } else {
-      model.buildConveyorModel(new ConveyorSystemModel(
-          ConveyorSystemModel.IntakeState.STOPPED,
-          ConveyorSystemModel.IntakePosition.UP,
-          ConveyorSystemModel.ShooterBlockState.CLOSE
-      ));
+      model.buildConveyorModel(new ConveyorSystemModel());
     }
-    System.out.println(model);
 
     return model.build();
   }

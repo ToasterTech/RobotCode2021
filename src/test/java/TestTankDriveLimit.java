@@ -1,18 +1,9 @@
 import static org.junit.Assert.assertEquals;
 
 import frc.robot.controllers.TankDrive;
-import frc.robot.controllers.TeleopControllerV1;
-import frc.robot.models.RobotModel;
-import frc.robot.subsystem.conveyor.models.ConveyorSystemModel;
-import frc.robot.subsystem.drive.models.DifferentialDriveModel;
-import frc.robot.subsystem.hanger.models.HangerSystemModel;
-import frc.robot.subsystem.shooter.models.ShooterSubsystemModel;
-import frc.robot.util.InputContainer;
-import frc.robot.util.SimpleInputContainer;
 
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.HashMap;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;

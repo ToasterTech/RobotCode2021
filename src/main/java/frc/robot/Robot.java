@@ -10,7 +10,6 @@ package frc.robot;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.controllers.AutoModeController;
-import frc.robot.controllers.AutomaticShoot;
 import frc.robot.controllers.RobotStateController;
 import frc.robot.controllers.TeleopControllerV2;
 import frc.robot.devices.commands.DeviceOutputCommand;
@@ -88,11 +87,7 @@ public class Robot extends TimedRobot {
 
     List<DeviceOutputCommand> shooterCommands = shooterSubsystem.run(model.shooterModel.orElse(new ShooterSubsystemModel(ShooterSubsystemModel.ShooterState.STOPPED)));
     List<DeviceOutputCommand> conveyorCommands = conveyorSubsystem.run(model.conveyorModel.orElse(
-        new ConveyorSystemModel(
-          ConveyorSystemModel.IntakeState.STOPPED,
-          ConveyorSystemModel.IntakePosition.UP,
-          ConveyorSystemModel.ShooterBlockState.CLOSE
-        )
+        new ConveyorSystemModel()
     ));
     List<DeviceOutputCommand> hangerCommands = hangerSubystem.run(model.hangerModel.orElse(new HangerSystemModel(HangerSystemModel.HangerState.STOPPED)));
     List<DeviceOutputCommand> driveMotorCommands = driveSubsystem.run(model.driveModel.orElse(new DifferentialDriveModel(0.0, 0.0)));
@@ -134,11 +129,7 @@ public class Robot extends TimedRobot {
 
     List<DeviceOutputCommand> shooterCommands = shooterSubsystem.run(model.shooterModel.orElse(new ShooterSubsystemModel(ShooterSubsystemModel.ShooterState.STOPPED)));
     List<DeviceOutputCommand> conveyorCommands = conveyorSubsystem.run(model.conveyorModel.orElse(
-        new ConveyorSystemModel(
-          ConveyorSystemModel.IntakeState.STOPPED,
-          ConveyorSystemModel.IntakePosition.UP,
-          ConveyorSystemModel.ShooterBlockState.CLOSE
-        )
+        new ConveyorSystemModel()
     ));
     List<DeviceOutputCommand> hangerCommands = hangerSubystem.run(model.hangerModel.orElse(new HangerSystemModel(HangerSystemModel.HangerState.STOPPED)));
     List<DeviceOutputCommand> driveMotorCommands = driveSubsystem.run(model.driveModel.orElse(new DifferentialDriveModel(0.0, 0.0)));

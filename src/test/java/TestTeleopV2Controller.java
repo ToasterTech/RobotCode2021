@@ -1,9 +1,7 @@
 import static org.junit.Assert.assertEquals;
 
-import frc.robot.controllers.TeleopControllerV1;
 import frc.robot.controllers.TeleopControllerV2;
 import frc.robot.models.RobotModel;
-import frc.robot.subsystem.conveyor.models.ConveyorSystemModel;
 import frc.robot.subsystem.drive.models.DifferentialDriveModel;
 import frc.robot.subsystem.hanger.models.HangerSystemModel;
 import frc.robot.subsystem.shooter.models.ShooterSubsystemModel;
@@ -56,8 +54,6 @@ public class TestTeleopV2Controller {
     final RobotModel model1 = new RobotModel.RobotModelBuilder()
                                       .buildShooterModel(new ShooterSubsystemModel(ShooterSubsystemModel.ShooterState.STOPPED))
                                       .buildHangerModel(new HangerSystemModel(HangerSystemModel.HangerState.STOPPED))
-                                      .buildConveyorModel(
-                                        new ConveyorSystemModel(ConveyorSystemModel.IntakeState.STOPPED, ConveyorSystemModel.IntakePosition.UP, ConveyorSystemModel.ShooterBlockState.CLOSE))
                                       .buildDriveModel(new DifferentialDriveModel(0.0, 0.0))
                                       .build();
 
@@ -84,8 +80,6 @@ public class TestTeleopV2Controller {
     final RobotModel model2 = new RobotModel.RobotModelBuilder()
                                       .buildShooterModel(new ShooterSubsystemModel(ShooterSubsystemModel.ShooterState.SHOOT_DEFAULT))
                                       .buildHangerModel(new HangerSystemModel(HangerSystemModel.HangerState.STOPPED))
-                                      .buildConveyorModel(
-                                        new ConveyorSystemModel(ConveyorSystemModel.IntakeState.STOPPED, ConveyorSystemModel.IntakePosition.UP, ConveyorSystemModel.ShooterBlockState.CLOSE))
                                       .buildDriveModel(new DifferentialDriveModel(0.0, 0.0))
                                       .build();
 
@@ -113,8 +107,6 @@ public class TestTeleopV2Controller {
     final RobotModel model3 = new RobotModel.RobotModelBuilder()
                                   .buildShooterModel(new ShooterSubsystemModel(ShooterSubsystemModel.ShooterState.SHOOT_DEFAULT))
                                   .buildHangerModel(new HangerSystemModel(HangerSystemModel.HangerState.STOPPED))
-                                  .buildConveyorModel(
-                                    new ConveyorSystemModel(ConveyorSystemModel.IntakeState.INTAKE, ConveyorSystemModel.IntakePosition.UP, ConveyorSystemModel.ShooterBlockState.OPEN))
                                   .buildDriveModel(new DifferentialDriveModel(0.0, 0.0))
                                   .build();
 
@@ -142,8 +134,6 @@ public class TestTeleopV2Controller {
     final RobotModel model4 = new RobotModel.RobotModelBuilder()
                                       .buildShooterModel(new ShooterSubsystemModel(ShooterSubsystemModel.ShooterState.SHOOT_DEFAULT))
                                       .buildHangerModel(new HangerSystemModel(HangerSystemModel.HangerState.STOPPED))
-                                      .buildConveyorModel(
-                                        new ConveyorSystemModel(ConveyorSystemModel.IntakeState.STOPPED, ConveyorSystemModel.IntakePosition.UP, ConveyorSystemModel.ShooterBlockState.OPEN))
                                       .buildDriveModel(new DifferentialDriveModel(0.0, 0.0))
                                       .build();
                                   
