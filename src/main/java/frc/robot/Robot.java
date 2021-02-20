@@ -132,25 +132,25 @@ public class Robot extends TimedRobot {
     HashMap<String, InputContainer<?>> inputMap = hardwareInterface.getInputValueMap();
     RobotModel model = controller.run(inputMap);
 
-    // List<DeviceOutputCommand> shooterCommands = shooterSubsystem.run(model.shooterModel.orElse(new ShooterSubsystemModel(ShooterSubsystemModel.ShooterState.STOPPED)));
-    // List<DeviceOutputCommand> conveyorCommands = conveyorSubsystem.run(model.conveyorModel.orElse(
-    //     new ConveyorSystemModel(
-    //       ConveyorSystemModel.IntakeState.STOPPED,
-    //       ConveyorSystemModel.IntakePosition.UP,
-    //       ConveyorSystemModel.ShooterBlockState.CLOSE
-    //     )
-    // ));
-    // List<DeviceOutputCommand> hangerCommands = hangerSubystem.run(model.hangerModel.orElse(new HangerSystemModel(HangerSystemModel.HangerState.STOPPED)));
+    List<DeviceOutputCommand> shooterCommands = shooterSubsystem.run(model.shooterModel.orElse(new ShooterSubsystemModel(ShooterSubsystemModel.ShooterState.STOPPED)));
+    List<DeviceOutputCommand> conveyorCommands = conveyorSubsystem.run(model.conveyorModel.orElse(
+        new ConveyorSystemModel(
+          ConveyorSystemModel.IntakeState.STOPPED,
+          ConveyorSystemModel.IntakePosition.UP,
+          ConveyorSystemModel.ShooterBlockState.CLOSE
+        )
+    ));
+    List<DeviceOutputCommand> hangerCommands = hangerSubystem.run(model.hangerModel.orElse(new HangerSystemModel(HangerSystemModel.HangerState.STOPPED)));
     List<DeviceOutputCommand> driveMotorCommands = driveSubsystem.run(model.driveModel.orElse(new DifferentialDriveModel(0.0, 0.0)));
 
 
     hardwareInterface.run(
         //Don't worry about this code, I know it is confusing, but it does make sense
         Stream.of(
-            // hangerCommands,
-            driveMotorCommands)
-            // shooterCommands, 
-            // conveyorCommands)
+            hangerCommands,
+            driveMotorCommands,
+            shooterCommands, 
+            conveyorCommands)
           .flatMap(Collection::stream)
           .collect(Collectors.toList())
     );
