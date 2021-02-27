@@ -8,7 +8,6 @@
 package frc.robot.subsystem.hanger;
 
 import frc.robot.devices.commands.DeviceOutputCommand;
-import frc.robot.devices.commands.GenericMotorCAN;
 import frc.robot.devices.commands.GenericMotorPWM;
 import frc.robot.devices.commands.SolenoidCommand;
 import frc.robot.subsystem.RobotSubsystem;

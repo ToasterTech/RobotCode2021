@@ -8,7 +8,6 @@
 package frc.robot.controllers;
 
 import frc.robot.models.RobotModel;
-import frc.robot.subsystem.conveyor.models.ConveyorSystemModel;
 import frc.robot.subsystem.hanger.models.HangerSystemModel;
 import frc.robot.subsystem.shooter.models.ShooterSubsystemModel;
 import frc.robot.util.InputContainer;
@@ -34,29 +33,6 @@ public class TeleopControllerV1 extends RobotStateController {
     } else {
       shooterState = ShooterSubsystemModel.ShooterState.STOPPED;
     }
-
-    ConveyorSystemModel.IntakeState intakeState;
-    if ((boolean)inputMap.get("driverRightShoulder").getValue()) {
-      intakeState = ConveyorSystemModel.IntakeState.INTAKE;
-    } else if ((boolean)inputMap.get("driverXButton").getValue()) {
-      intakeState = ConveyorSystemModel.IntakeState.OUTTAKE;
-    } else {
-      intakeState = ConveyorSystemModel.IntakeState.STOPPED;
-    }
-
-    ConveyorSystemModel.IntakePosition intakePosition;
-    if ((double)inputMap.get("driverRightTrigger").getValue() > .5) {
-      intakePosition = ConveyorSystemModel.IntakePosition.DOWN;
-    }  else {
-      intakePosition = ConveyorSystemModel.IntakePosition.UP;
-    }
-
-    ConveyorSystemModel.ShooterBlockState blockState;
-    if ((double)inputMap.get("driverLeftTrigger").getValue() > .5) {
-      blockState = ConveyorSystemModel.ShooterBlockState.OPEN;
-    } else {
-      blockState = ConveyorSystemModel.ShooterBlockState.CLOSE;
-    }
     HangerSystemModel.HangerState hangerState;
     if ((boolean)inputMap.get("driverYButton").getValue()) {
       hangerState = HangerSystemModel.HangerState.RAISE;
@@ -68,11 +44,6 @@ public class TeleopControllerV1 extends RobotStateController {
 
     return new RobotModel.RobotModelBuilder()
                 .buildShooterModel(new ShooterSubsystemModel(shooterState))
-                .buildConveyorModel(new ConveyorSystemModel(
-                  intakeState,
-                  intakePosition,
-                  blockState
-                ))
                 .buildHangerModel(new HangerSystemModel(hangerState))
                 .buildDriveModel(this.tankDrive.run(inputMap).driveModel.get())
                 .build();

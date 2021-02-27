@@ -1,6 +1,5 @@
 import static org.junit.Assert.assertEquals;
 
-import frc.robot.util.EncoderSpeedCheck;
 import frc.robot.util.Toggle;
 
 import java.util.Arrays;

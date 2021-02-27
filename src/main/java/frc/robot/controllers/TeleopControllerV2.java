@@ -8,7 +8,6 @@
 package frc.robot.controllers;
 
 import frc.robot.models.RobotModel;
-import frc.robot.subsystem.conveyor.models.ConveyorSystemModel;
 import frc.robot.subsystem.hanger.models.HangerSystemModel;
 import frc.robot.subsystem.shooter.models.ShooterSubsystemModel;
 import frc.robot.util.EncoderSpeedCheck;
@@ -48,30 +47,6 @@ public class TeleopControllerV2 extends RobotStateController {
     } else {
       shooterState = ShooterSubsystemModel.ShooterState.STOPPED;
     }
-    ConveyorSystemModel.ShooterBlockState blockState;
-    if ((double)inputMap.get("driverRightTrigger").getValue() > .5) {
-      blockState = ConveyorSystemModel.ShooterBlockState.OPEN;
-    } else {
-      blockState = ConveyorSystemModel.ShooterBlockState.CLOSE;
-    }
-
-    // Operator Control of Intake direct mapping
-    ConveyorSystemModel.IntakeState intakeState;
-    if ((boolean)inputMap.get("operatorJoystickTopLeftButton").getValue()) {
-      intakeState = ConveyorSystemModel.IntakeState.INTAKE;
-    } else if ((boolean)inputMap.get("operatorJoystickTopRightButton").getValue()) {
-      intakeState = ConveyorSystemModel.IntakeState.OUTTAKE;
-    } else {
-      intakeState = ConveyorSystemModel.IntakeState.STOPPED;
-    }
-
-    //TODO: there was talk of making this a toggle, but still need to implement this. 
-    ConveyorSystemModel.IntakePosition intakePosition;
-    if (this.joystickToggle.run((boolean)inputMap.get("operatorJoystickTrigger").getValue())) {
-      intakePosition = ConveyorSystemModel.IntakePosition.DOWN;
-    }  else {
-      intakePosition = ConveyorSystemModel.IntakePosition.UP;
-    }
 
     // Hanger requires two buttons to be pushed to prevent accidental triggering.
     HangerSystemModel.HangerState hangerState;
@@ -89,11 +64,6 @@ public class TeleopControllerV2 extends RobotStateController {
 
     return new RobotModel.RobotModelBuilder()
                 .buildShooterModel(autoShooterModel.shooterModel.orElse(new ShooterSubsystemModel(shooterState)))
-                .buildConveyorModel(autoShooterModel.conveyorModel.orElse(new ConveyorSystemModel(
-                  intakeState,
-                  intakePosition,
-                  blockState
-                )))
                 .buildHangerModel(new HangerSystemModel(hangerState))
                 .buildDriveModel(this.tankDrive.run(inputMap).driveModel.get())
                 .build();
