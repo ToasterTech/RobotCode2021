@@ -44,7 +44,7 @@ public class TestTeleopV1Controller {
     final RobotModel model1 = new RobotModel.RobotModelBuilder()
                                       .buildShooterModel(new ShooterSubsystemModel(ShooterSubsystemModel.ShooterState.SHOOT_DEFAULT))
                                       .buildHangerModel(new HangerSystemModel(HangerSystemModel.HangerState.RAISE))
-                                      .buildDriveModel(new DifferentialDriveModel(.4, .4))
+                                      .buildDriveModel(new DifferentialDriveModel(.01, .01))
                                       .build();
 
     final HashMap<String, InputContainer<?>> test2 = new HashMap<String, InputContainer<?>>();
@@ -62,7 +62,7 @@ public class TestTeleopV1Controller {
     final RobotModel model2 = new RobotModel.RobotModelBuilder()
                                       .buildShooterModel(new ShooterSubsystemModel(ShooterSubsystemModel.ShooterState.SHOOT_DEFAULT))
                                       .buildHangerModel(new HangerSystemModel(HangerSystemModel.HangerState.LOWER))
-                                      .buildDriveModel(new DifferentialDriveModel(.4, .4))
+                                      .buildDriveModel(new DifferentialDriveModel(.01, .01))
                                       .build();
 
     final HashMap<String, InputContainer<?>> test3 = new HashMap<String, InputContainer<?>>();
@@ -80,7 +80,7 @@ public class TestTeleopV1Controller {
     final RobotModel model3 = new RobotModel.RobotModelBuilder()
                                       .buildShooterModel(new ShooterSubsystemModel(ShooterSubsystemModel.ShooterState.SHOOT_DEFAULT))
                                       .buildHangerModel(new HangerSystemModel(HangerSystemModel.HangerState.STOPPED))
-                                      .buildDriveModel(new DifferentialDriveModel(-.4, .4))
+                                      .buildDriveModel(new DifferentialDriveModel(-.01, .01))
                                       .build();
 
     final HashMap<String, InputContainer<?>> test4 = new HashMap<String, InputContainer<?>>();
@@ -98,7 +98,7 @@ public class TestTeleopV1Controller {
     final RobotModel model4 = new RobotModel.RobotModelBuilder()
                                       .buildShooterModel(new ShooterSubsystemModel(ShooterSubsystemModel.ShooterState.STOPPED))
                                       .buildHangerModel(new HangerSystemModel(HangerSystemModel.HangerState.STOPPED))
-                                      .buildDriveModel(new DifferentialDriveModel(-.4, .4))
+                                      .buildDriveModel(new DifferentialDriveModel(-.01, .01))
                                       .build();
 
     final HashMap<String, InputContainer<?>> test5 = new HashMap<String, InputContainer<?>>();
@@ -116,7 +116,7 @@ public class TestTeleopV1Controller {
     final RobotModel model5 = new RobotModel.RobotModelBuilder()
                                       .buildShooterModel(new ShooterSubsystemModel(ShooterSubsystemModel.ShooterState.STOPPED))
                                       .buildHangerModel(new HangerSystemModel(HangerSystemModel.HangerState.STOPPED))
-                                      .buildDriveModel(new DifferentialDriveModel(-.4, .4))
+                                      .buildDriveModel(new DifferentialDriveModel(-.01, .01))
                                       .build();
                                   
     return Arrays.asList(new Object[][] {
