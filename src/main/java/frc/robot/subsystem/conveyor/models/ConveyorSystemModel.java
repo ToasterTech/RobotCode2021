@@ -1,5 +1,6 @@
 package frc.robot.subsystem.conveyor.models;
 
+import java.util.Objects;
 
 /**
  * Base class for models defining drive behavior.
@@ -10,25 +11,32 @@ public class ConveyorSystemModel extends ConveyorModel {
     INTAKE_SLOW, INTAKE_FAST, STOPPED, OUTAKE
   }
 
-public final ConveyorState conveyorState;
+  public final ConveyorState conveyorState;
+
+  public ConveyorSystemModel() {
+    this.conveyorState = ConveyorState.STOPPED;
+  }
 
   public ConveyorSystemModel(ConveyorState state) {
     this.conveyorState = state;
   }
 
-  public ConveyorSystemModel() {
-    this.conveyorState = ConveyorState.STOPPED;
-  }
   @Override
   public boolean equals(Object other) {
-    // TODO Auto-generated method stub
-    return false;
+    if (!(other instanceof ConveyorSystemModel)) {
+      return false;
+    }
+    ConveyorSystemModel otherVal = (ConveyorSystemModel)other;
+    return this.conveyorState.equals(otherVal.conveyorState);
   }
 
   @Override
   public int hashCode() {
-    // TODO Auto-generated method stub
-    return 0;
+    return Objects.hash(this.conveyorState);
+  }
+
+  public String toString() {
+    return "ConveyorStateModel(" + this.conveyorState + ")";
   }
 
 }
