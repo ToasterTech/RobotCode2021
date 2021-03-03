@@ -13,7 +13,7 @@ import frc.robot.util.SimpleInputContainer;
 
 import java.util.Objects;
 
-public class UltrasonicSensor implements DeviceInput<Integer> {
+public class UltrasonicSensor implements DeviceInput<Double> {
   private AnalogInput ultrasonicSensor;
   
   public UltrasonicSensor(int channel) {
@@ -24,8 +24,8 @@ public class UltrasonicSensor implements DeviceInput<Integer> {
     this.ultrasonicSensor = analogInput;
   }
 
-  public InputContainer<Integer> getValue() {
-    return new SimpleInputContainer<Integer>(this.ultrasonicSensor.getValue());
+  public InputContainer<Double> getValue() {
+    return new SimpleInputContainer<Double>(this.ultrasonicSensor.getVoltage());
   }
   
   @Override
