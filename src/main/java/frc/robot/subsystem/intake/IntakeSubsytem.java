@@ -8,9 +8,8 @@
 package frc.robot.subsystem.intake;
 
 import frc.robot.devices.commands.DeviceOutputCommand;
-import frc.robot.devices.commands.GenericMotorCAN;
+import frc.robot.devices.commands.GenericMotorPWM;
 import frc.robot.devices.commands.SolenoidCommand;
-import frc.robot.devices.commands.VelocityControlMotorCAN;
 import frc.robot.subsystem.RobotSubsystem;
 import frc.robot.subsystem.intake.models.IntakeModel;
 import frc.robot.subsystem.intake.models.IntakeSystemModel;
@@ -25,42 +24,40 @@ public class IntakeSubsytem extends RobotSubsystem<IntakeModel> {
   @Override
   public List<DeviceOutputCommand> run(IntakeModel input) {
     DeviceOutputCommand motorCommand;
-    DeviceOutputCommand intakeArmCommand;
+    DeviceOutputCommand intakeArmLeftCommand;
+    DeviceOutputCommand intakeArmRightCommand;
 
     if (input instanceof IntakeSystemModel) {
       IntakeSystemModel conveyorSystemModel = (IntakeSystemModel) input;
       if (conveyorSystemModel.intakeState == IntakeSystemModel.IntakeState.STOPPED) {
-        motorCommand = new GenericMotorCAN("intakeMotor", 0.0);
+        motorCommand = new GenericMotorPWM("intakeMotor", 0.0);
       } else if (conveyorSystemModel.intakeState == IntakeSystemModel.IntakeState.INTAKE) {
-        motorCommand = new VelocityControlMotorCAN(
-          "intakeMotor", 
-          -.5,
-          5700
-        );
+        motorCommand = new GenericMotorPWM("intakeMotor", -1.0);
       } else if (conveyorSystemModel.intakeState == IntakeSystemModel.IntakeState.OUTTAKE) {
-        motorCommand = new VelocityControlMotorCAN(
-          "intakeMotor", 
-          .32,
-          5700
-        );
+        motorCommand = new GenericMotorPWM("intakeMotor", 0.0);
       } else {
-        motorCommand = new GenericMotorCAN("intakeMotor", 0.0);
+        motorCommand = new GenericMotorPWM("intakeMotor", 0.0);
       }
 
       if (conveyorSystemModel.intakePosition == IntakeSystemModel.IntakePosition.UP) {
-        intakeArmCommand = new SolenoidCommand("intakeDrop", SolenoidCommand.SolenoidState.CLOSE);
+        intakeArmLeftCommand = new SolenoidCommand("intakeDropLeft", SolenoidCommand.SolenoidState.CLOSE);
+        intakeArmRightCommand = new SolenoidCommand("intakeDropRight", SolenoidCommand.SolenoidState.CLOSE);
       } else if (conveyorSystemModel.intakePosition == IntakeSystemModel.IntakePosition.DOWN) {
-        intakeArmCommand = new SolenoidCommand("intakeDrop", SolenoidCommand.SolenoidState.OPEN);
+        intakeArmLeftCommand = new SolenoidCommand("intakeDropLeft", SolenoidCommand.SolenoidState.OPEN);
+        intakeArmRightCommand = new SolenoidCommand("intakeDropRight", SolenoidCommand.SolenoidState.OPEN);
       } else {
-        intakeArmCommand = new SolenoidCommand("intakeDrop", SolenoidCommand.SolenoidState.CLOSE);
+        intakeArmLeftCommand = new SolenoidCommand("intakeDropLeft", SolenoidCommand.SolenoidState.CLOSE);
+        intakeArmRightCommand = new SolenoidCommand("intakeDropRight", SolenoidCommand.SolenoidState.CLOSE);
       }
     } else {
-      intakeArmCommand = new SolenoidCommand("intakeDrop", SolenoidCommand.SolenoidState.CLOSE);
-      motorCommand = new GenericMotorCAN("intakeMotor", 0.0);
+      intakeArmLeftCommand = new SolenoidCommand("intakeDropLeft", SolenoidCommand.SolenoidState.CLOSE);
+      intakeArmRightCommand = new SolenoidCommand("intakeDropRight", SolenoidCommand.SolenoidState.CLOSE);
+      motorCommand = new GenericMotorPWM("intakeMotor", 0.0);
     }
     return Arrays.asList(
       motorCommand,
-      intakeArmCommand
+      intakeArmLeftCommand,
+      intakeArmRightCommand
     );  
   }
 }

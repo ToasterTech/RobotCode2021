@@ -58,8 +58,9 @@ public class HardwareInterface extends BaseHardwareInterface {
     this.inputMap.put("hangerSwitch", new LimitSwitch(0));
 
 
-    this.outputMap.put("intakeStop", new DeviceSolenoid(2));
-    this.outputMap.put("intakeDrop", new DeviceSolenoid(0));
+    this.outputMap.put("intakeDropLeft", new DeviceSolenoid(0));
+    this.outputMap.put("intakeDropRight", new DeviceSolenoid(2));
+    this.outputMap.put("intakeMotor", new DeviceSolenoid(0));
 
     // 
     DeviceCANSparkMax shooterMotor = new DeviceCANSparkMax(2, MotorType.kBrushless, Arrays.asList(
