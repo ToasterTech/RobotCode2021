@@ -7,6 +7,7 @@
 
 package frc.robot.controllers;
 
+import frc.robot.controllers.ConveyorStateMachine.ConveyorStateMachineInput;
 import frc.robot.models.RobotModel;
 import frc.robot.subsystem.hanger.models.HangerSystemModel;
 import frc.robot.subsystem.shooter.models.ShooterSubsystemModel;
@@ -22,25 +23,21 @@ import java.util.Objects;
  */
 public class TeleopControllerV2 extends RobotStateController {
   private TankDrive tankDrive;
-  private AutomaticShoot autoShooerController;
   private Toggle joystickToggle;
+  private ConveyorStateMachine conveyorStateMachine;
+  private EncoderSpeedCheck defaultTargetVelocity;
 
-  public TeleopControllerV2(EncoderSpeedCheck defaultTargetVelocity) {
+  public TeleopControllerV2(EncoderSpeedCheck defaultTargetVelocity, ConveyorStateMachine conveyorStateMachine) {
     this.tankDrive = new TankDrive("driverLeftAxisY", "driverRightAxisY");
-    this.autoShooerController = new AutomaticShoot(defaultTargetVelocity);
     this.joystickToggle = new Toggle();
+    this.conveyorStateMachine = conveyorStateMachine;
+    this.defaultTargetVelocity = defaultTargetVelocity;
   }
 
   @Override
   public RobotModel run(HashMap<String, InputContainer<?>> inputMap) {    
     RobotModel autoShooterModel;
     ShooterSubsystemModel.ShooterState shooterState;
-    // Auto Shooting
-    if ((boolean)inputMap.get("driverLeftShoulder").getValue()) {
-      autoShooterModel = autoShooerController.run(inputMap);
-    } else {
-      autoShooterModel = new RobotModel.RobotModelBuilder().build();
-    }
     // Manual Shooting
     if ((boolean)inputMap.get("driverRightShoulder").getValue()) {
       shooterState = ShooterSubsystemModel.ShooterState.SHOOT_DEFAULT;
@@ -63,10 +60,20 @@ public class TeleopControllerV2 extends RobotStateController {
     }
 
     return new RobotModel.RobotModelBuilder()
-                .buildShooterModel(autoShooterModel.shooterModel.orElse(new ShooterSubsystemModel(shooterState)))
+                .buildShooterModel(new ShooterSubsystemModel(shooterState))
                 .buildHangerModel(new HangerSystemModel(hangerState))
                 .buildDriveModel(this.tankDrive.run(inputMap).driveModel.get())
-                .build();
+                .buildConveyorModel(
+                  conveyorStateMachine.run(new ConveyorStateMachineInput(
+                    (double)inputMap.get("conveyorSonarFront").getValue() > 2,
+                    (double)inputMap.get("conveyorSonarMiddle").getValue() > 2,
+                    (double)inputMap.get("conveyorSonarTop").getValue() > 2,
+                    this.defaultTargetVelocity.isEncoderAtSpeed((double) inputMap.get("shooterEncoderVelocity").getValue()),
+                    (boolean)inputMap.get("driveRightShoulder").getValue()
+                  )
+                )
+              )
+              .build();
   }
 
   @Override

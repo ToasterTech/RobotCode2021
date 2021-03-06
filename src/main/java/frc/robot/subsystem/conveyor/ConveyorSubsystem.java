@@ -25,7 +25,7 @@ public class ConveyorSubsystem extends RobotSubsystem<ConveyorModel> {
     DeviceOutputCommand motorCommand = new GenericMotorCAN("conveyorMotor", 0.0);
     if (input instanceof ConveyorSystemModel) {
       ConveyorSystemModel conveyorSystemModel = (ConveyorSystemModel) input;
-      switch(conveyorSystemModel.conveyorState) {
+      switch (conveyorSystemModel.conveyorState) {
         case INTAKE_SLOW: 
           motorCommand = new GenericMotorCAN("conveyorMotor", -0.3); 
           break;
@@ -38,6 +38,9 @@ public class ConveyorSubsystem extends RobotSubsystem<ConveyorModel> {
         case OUTAKE: 
           motorCommand = new GenericMotorCAN("conveyorMotor", 0.3); 
           break;
+          default:
+            motorCommand = new GenericMotorCAN("conveyorMotor", 0.0);
+            break;
       }
     }
     return Arrays.asList(

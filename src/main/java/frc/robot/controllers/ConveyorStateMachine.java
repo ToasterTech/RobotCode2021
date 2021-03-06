@@ -24,7 +24,12 @@ public class ConveyorStateMachine {
   }
 
   public enum ConveyorControlStates {
-    IDLE, INCREMENT_BALL_COUNT, INTAKE_NEW_BALL, INTAKE_EXISTING_BALL
+    //Start States
+    INIT, 
+    //Intake States
+    IDLE, INCREMENT_BALL_COUNT, INTAKE_NEW_BALL, INTAKE_EXISTING_BALL, 
+    //Conveyor States
+    SHOOTER_DECISION, WAIT_FOR_SHOOTER, SHOOT, DECREMENT_BALL_COUNT, PREPARE_NEXT_BALL_FOR_SHOOT
   }
 
   private ConveyorControlStates nextState;
@@ -55,9 +60,23 @@ public class ConveyorStateMachine {
     return this.lastInput;
   }
 
+  public ConveyorSystemModel runInit(ConveyorStateMachineInput input) {
+    if (input.ballSensor1Trigger) {
+      this.nextState = ConveyorControlStates.INCREMENT_BALL_COUNT;
+    } else { 
+      this.nextState = ConveyorControlStates.IDLE;
+    }
+    return new ConveyorSystemModel(ConveyorState.STOPPED);
+
+  }
+
   public ConveyorSystemModel runIdleState(ConveyorStateMachineInput input) {
     if (input.ballSensor1Trigger && !lastInput.orElse(input).ballSensor1Trigger) {
       this.nextState = ConveyorControlStates.INCREMENT_BALL_COUNT;
+    } else if (input.shooterTrigger) {
+      this.nextState = ConveyorControlStates.SHOOTER_DECISION;
+    } else {
+      this.nextState = ConveyorControlStates.IDLE;
     }
     return new ConveyorSystemModel(ConveyorState.STOPPED);
   }
@@ -91,6 +110,49 @@ public class ConveyorStateMachine {
     return new ConveyorSystemModel(ConveyorState.INTAKE_SLOW);
   }
 
+  public ConveyorSystemModel runShooterDecision(ConveyorStateMachineInput input) {
+    if (input.ballSensor3Trigger) {
+      this.nextState = ConveyorControlStates.WAIT_FOR_SHOOTER;
+    } else {
+      this.nextState = ConveyorControlStates.PREPARE_NEXT_BALL_FOR_SHOOT;
+    }
+    return new ConveyorSystemModel(ConveyorState.STOPPED);
+  }
+
+  public ConveyorSystemModel runWaitForShoot(ConveyorStateMachineInput input) {
+    if (input.shooterAtSpeed) {
+      this.nextState = ConveyorControlStates.SHOOT;
+    } else {
+      this.nextState = ConveyorControlStates.WAIT_FOR_SHOOTER;
+    }
+    return new ConveyorSystemModel(ConveyorState.STOPPED);
+  }
+
+  public ConveyorSystemModel runShoot(ConveyorStateMachineInput input) {
+    if (!input.ballSensor3Trigger && lastInput.orElse(input).ballSensor3Trigger) {
+      this.nextState = ConveyorControlStates.SHOOT;
+    } else {
+      this.nextState = ConveyorControlStates.SHOOT;
+    }
+    return new ConveyorSystemModel(ConveyorState.INTAKE_FAST);
+  }
+
+  public ConveyorSystemModel runDecrementBallCount(ConveyorStateMachineInput input) {
+    this.ballCount = this.ballCount - 1;
+    this.nextState = ConveyorControlStates.PREPARE_NEXT_BALL_FOR_SHOOT;
+    return new ConveyorSystemModel(ConveyorState.INTAKE_FAST);
+  }
+
+  public ConveyorSystemModel runPrepareNextBall(ConveyorStateMachineInput input) {
+    if (input.ballSensor3Trigger && !lastInput.orElse(input).ballSensor3Trigger) {
+      this.nextState = ConveyorControlStates.IDLE;
+    } else if (input.ballSensor1Trigger && !lastInput.orElse(input).ballSensor1Trigger) {
+      this.nextState = ConveyorControlStates.INCREMENT_BALL_COUNT;
+    } else {
+      this.nextState = ConveyorControlStates.PREPARE_NEXT_BALL_FOR_SHOOT;
+    }
+      return new ConveyorSystemModel(ConveyorState.INTAKE_SLOW);
+  } 
   /**
    * Runs the conveyor state machine.
    */
@@ -98,6 +160,8 @@ public class ConveyorStateMachine {
     ConveyorSystemModel conveyorModel;
     this.currentState = this.nextState;
     switch (this.currentState) {
+      case INIT:
+        conveyorModel = runInit(input);
       case IDLE:
         conveyorModel = runIdleState(input);
         break;
@@ -109,6 +173,21 @@ public class ConveyorStateMachine {
         break;
       case INTAKE_EXISTING_BALL:
         conveyorModel = runIntakeExistingBallState(input);
+        break;
+      case SHOOTER_DECISION:
+        conveyorModel = runShooterDecision(input);
+        break;
+      case WAIT_FOR_SHOOTER:
+        conveyorModel = runWaitForShoot(input);
+        break;
+      case SHOOT:
+        conveyorModel = runShooterDecision(input);
+        break;
+      case DECREMENT_BALL_COUNT:
+        conveyorModel = runDecrementBallCount(input);
+        break;
+       case PREPARE_NEXT_BALL_FOR_SHOOT:
+        conveyorModel = runPrepareNextBall(input);
         break;
       default:
         conveyorModel = new ConveyorSystemModel(ConveyorState.STOPPED);
