@@ -10,6 +10,7 @@ package frc.robot.models;
 import frc.robot.subsystem.conveyor.models.ConveyorModel;
 import frc.robot.subsystem.drive.models.DriveModel;
 import frc.robot.subsystem.hanger.models.HangerModel;
+import frc.robot.subsystem.intake.models.IntakeModel;
 import frc.robot.subsystem.shooter.models.ShooterModel;
 
 import java.util.Objects;
@@ -23,12 +24,14 @@ public class RobotModel extends Model {
   public final Optional<ShooterModel> shooterModel;
   public final Optional<DriveModel> driveModel;
   public final Optional<HangerModel> hangerModel;
+  public final Optional<IntakeModel> intakeModel;
 
   public static class RobotModelBuilder {
     private Optional<ConveyorModel> conveyorModel = Optional.empty();
     private Optional<ShooterModel> shooterModel = Optional.empty();
     private Optional<DriveModel> driveModel = Optional.empty();
     private Optional<HangerModel> hangerModel = Optional.empty();
+    private Optional<IntakeModel> intakeModel = Optional.empty();
 
     public RobotModelBuilder buildConveyorModel(ConveyorModel model) {
       this.conveyorModel = Optional.of(model);
@@ -50,6 +53,11 @@ public class RobotModel extends Model {
       return this;
     }
 
+    public RobotModelBuilder buildIntakeModel(IntakeModel model) {
+      this.intakeModel = Optional.of(model);
+      return this;
+    }
+
     public RobotModel build() {
       return new RobotModel(this);
     }  
@@ -60,6 +68,7 @@ public class RobotModel extends Model {
     this.shooterModel = builder.shooterModel;
     this.driveModel = builder.driveModel;
     this.hangerModel = builder.hangerModel;
+    this.intakeModel = builder.intakeModel;
   }
 
   @Override
@@ -71,16 +80,17 @@ public class RobotModel extends Model {
     return (this.conveyorModel.equals(otherVal.conveyorModel) 
             && this.shooterModel.equals(otherVal.shooterModel) 
             && this.driveModel.equals(otherVal.driveModel) 
+            && this.intakeModel.equals(otherVal.intakeModel) 
             && this.hangerModel.equals(otherVal.hangerModel));
   }
   
   @Override
   public int hashCode() {
-    return Objects.hash(this.conveyorModel, this.shooterModel, this.driveModel, this.hangerModel);
+    return Objects.hash(this.conveyorModel, this.shooterModel, this.driveModel, this.hangerModel, this.intakeModel);
   }
 
   public String toString() {
-    return "RobotModel(" + this.conveyorModel + "::" + this.shooterModel + "::" + this.driveModel + "::" + this.hangerModel + ")";
+    return "RobotModel(" + this.conveyorModel + "::" + this.shooterModel + "::" + this.driveModel + "::" + this.hangerModel + "::" + this.intakeModel + ")";
   }
 
 }
