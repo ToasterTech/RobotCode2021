@@ -36,4 +36,10 @@ public class SimpleInputContainer<T> implements InputContainer<T>  {
   public int hashCode() {
     return Objects.hash(this.value);
   }
+
+  @Override
+  public String toString() {
+    return "SimpleInputContainer(" + this.value + ")";
+  }
+
 }

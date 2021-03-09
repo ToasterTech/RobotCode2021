@@ -1,7 +1,10 @@
 import static org.junit.Assert.assertEquals;
 
+import frc.robot.controllers.ConveyorStateMachine;
 import frc.robot.controllers.TeleopControllerV2;
 import frc.robot.models.RobotModel;
+import frc.robot.subsystem.conveyor.models.ConveyorSystemModel;
+import frc.robot.subsystem.conveyor.models.ConveyorSystemModel.ConveyorState;
 import frc.robot.subsystem.drive.models.DifferentialDriveModel;
 import frc.robot.subsystem.hanger.models.HangerSystemModel;
 import frc.robot.subsystem.shooter.models.ShooterSubsystemModel;
@@ -50,11 +53,16 @@ public class TestTeleopV2Controller {
     test1.put("operatorBaseRightUpperButton", new SimpleInputContainer<Boolean>(false));
     test1.put("operatorBaseLeftUpperButton", new SimpleInputContainer<Boolean>(false));
     test1.put("operatorBaseLeftLowerButton", new SimpleInputContainer<Boolean>(false));
+    
+    test1.put("conveyorSonarFront", new SimpleInputContainer<Double>(0.0));
+    test1.put("conveyorSonarMiddle", new SimpleInputContainer<Double>(0.0));
+    test1.put("conveyorSonarTop", new SimpleInputContainer<Double>(0.0));
 
     final RobotModel model1 = new RobotModel.RobotModelBuilder()
                                       .buildShooterModel(new ShooterSubsystemModel(ShooterSubsystemModel.ShooterState.STOPPED))
                                       .buildHangerModel(new HangerSystemModel(HangerSystemModel.HangerState.STOPPED))
                                       .buildDriveModel(new DifferentialDriveModel(0.0, 0.0))
+                                      .buildConveyorModel(new ConveyorSystemModel(ConveyorState.STOPPED))
                                       .build();
 
     final HashMap<String, InputContainer<?>> test2 = new HashMap<String, InputContainer<?>>();
@@ -77,10 +85,15 @@ public class TestTeleopV2Controller {
     test2.put("operatorBaseLeftUpperButton", new SimpleInputContainer<Boolean>(false));
     test2.put("operatorBaseLeftLowerButton", new SimpleInputContainer<Boolean>(false));
 
+    test2.put("conveyorSonarFront", new SimpleInputContainer<Double>(0.0));
+    test2.put("conveyorSonarMiddle", new SimpleInputContainer<Double>(0.0));
+    test2.put("conveyorSonarTop", new SimpleInputContainer<Double>(0.0));
+
     final RobotModel model2 = new RobotModel.RobotModelBuilder()
-                                      .buildShooterModel(new ShooterSubsystemModel(ShooterSubsystemModel.ShooterState.SHOOT_DEFAULT))
+                                      .buildShooterModel(new ShooterSubsystemModel(ShooterSubsystemModel.ShooterState.STOPPED))
                                       .buildHangerModel(new HangerSystemModel(HangerSystemModel.HangerState.STOPPED))
                                       .buildDriveModel(new DifferentialDriveModel(0.0, 0.0))
+                                      .buildConveyorModel(new ConveyorSystemModel(ConveyorState.STOPPED))
                                       .build();
 
 
@@ -104,10 +117,16 @@ public class TestTeleopV2Controller {
     test3.put("operatorBaseLeftUpperButton", new SimpleInputContainer<Boolean>(false));
     test3.put("operatorBaseLeftLowerButton", new SimpleInputContainer<Boolean>(false));
 
+    test3.put("conveyorSonarFront", new SimpleInputContainer<Double>(0.0));
+    test3.put("conveyorSonarMiddle", new SimpleInputContainer<Double>(0.0));
+    test3.put("conveyorSonarTop", new SimpleInputContainer<Double>(0.0));
+
+
     final RobotModel model3 = new RobotModel.RobotModelBuilder()
-                                  .buildShooterModel(new ShooterSubsystemModel(ShooterSubsystemModel.ShooterState.SHOOT_DEFAULT))
+                                  .buildShooterModel(new ShooterSubsystemModel(ShooterSubsystemModel.ShooterState.STOPPED))
                                   .buildHangerModel(new HangerSystemModel(HangerSystemModel.HangerState.STOPPED))
                                   .buildDriveModel(new DifferentialDriveModel(0.0, 0.0))
+                                  .buildConveyorModel(new ConveyorSystemModel(ConveyorState.STOPPED))
                                   .build();
 
 
@@ -131,10 +150,15 @@ public class TestTeleopV2Controller {
     test4.put("operatorBaseLeftUpperButton", new SimpleInputContainer<Boolean>(false));
     test4.put("operatorBaseLeftLowerButton", new SimpleInputContainer<Boolean>(false));
 
+    test4.put("conveyorSonarFront", new SimpleInputContainer<Double>(0.0));
+    test4.put("conveyorSonarMiddle", new SimpleInputContainer<Double>(0.0));
+    test4.put("conveyorSonarTop", new SimpleInputContainer<Double>(0.0));
+
     final RobotModel model4 = new RobotModel.RobotModelBuilder()
                                       .buildShooterModel(new ShooterSubsystemModel(ShooterSubsystemModel.ShooterState.SHOOT_DEFAULT))
                                       .buildHangerModel(new HangerSystemModel(HangerSystemModel.HangerState.STOPPED))
                                       .buildDriveModel(new DifferentialDriveModel(0.0, 0.0))
+                                      .buildConveyorModel(new ConveyorSystemModel(ConveyorState.STOPPED))
                                       .build();
                                   
     return Arrays.asList(new Object[][] {
@@ -148,7 +172,7 @@ public class TestTeleopV2Controller {
 
   @Test
   public void testTeleopControllerV1() {
-    TeleopControllerV2 teleopControllerV1 = new TeleopControllerV2(new EncoderSpeedCheck(200, 5700));
+    TeleopControllerV2 teleopControllerV1 = new TeleopControllerV2(new EncoderSpeedCheck(200, 5700), new ConveyorStateMachine());
     RobotModel results = teleopControllerV1.run(this.inputMap);
     System.out.println(results);
     System.out.println(this.expectedModel);

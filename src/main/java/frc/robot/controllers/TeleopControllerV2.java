@@ -69,7 +69,7 @@ public class TeleopControllerV2 extends RobotStateController {
                     (double)inputMap.get("conveyorSonarMiddle").getValue() > 2,
                     (double)inputMap.get("conveyorSonarTop").getValue() > 2,
                     this.defaultTargetVelocity.isEncoderAtSpeed((double) inputMap.get("shooterEncoderVelocity").getValue()),
-                    (boolean)inputMap.get("driveRightShoulder").getValue()
+                    (boolean)inputMap.get("driverRightShoulder").getValue()
                   )
                 )
               )
