@@ -151,8 +151,10 @@ public class ConveyorStateMachine {
     } else {
       this.nextState = ConveyorControlStates.PREPARE_NEXT_BALL_FOR_SHOOT;
     }
-      return new ConveyorSystemModel(ConveyorState.INTAKE_SLOW);
+    return new ConveyorSystemModel(ConveyorState.INTAKE_SLOW);
   } 
+
+
   /**
    * Runs the conveyor state machine.
    */
@@ -162,6 +164,7 @@ public class ConveyorStateMachine {
     switch (this.currentState) {
       case INIT:
         conveyorModel = runInit(input);
+        break;
       case IDLE:
         conveyorModel = runIdleState(input);
         break;
@@ -186,7 +189,7 @@ public class ConveyorStateMachine {
       case DECREMENT_BALL_COUNT:
         conveyorModel = runDecrementBallCount(input);
         break;
-       case PREPARE_NEXT_BALL_FOR_SHOOT:
+      case PREPARE_NEXT_BALL_FOR_SHOOT:
         conveyorModel = runPrepareNextBall(input);
         break;
       default:

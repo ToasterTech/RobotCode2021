@@ -38,9 +38,9 @@ public class ConveyorSubsystem extends RobotSubsystem<ConveyorModel> {
         case OUTAKE: 
           motorCommand = new GenericMotorCAN("conveyorMotor", 0.3); 
           break;
-          default:
-            motorCommand = new GenericMotorCAN("conveyorMotor", 0.0);
-            break;
+        default:
+          motorCommand = new GenericMotorCAN("conveyorMotor", 0.0);
+          break;
       }
     }
     return Arrays.asList(
