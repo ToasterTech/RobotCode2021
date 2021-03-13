@@ -14,6 +14,9 @@ import frc.robot.subsystem.shooter.models.ShooterSubsystemModel;
 import frc.robot.util.EncoderSpeedCheck;
 import frc.robot.util.InputContainer;
 import frc.robot.util.Toggle;
+import frc.robot.subsystem.intake.models.IntakeSystemModel;
+import frc.robot.subsystem.intake.models.IntakeSystemModel.IntakePosition;
+import frc.robot.subsystem.intake.models.IntakeSystemModel.IntakeState;
 
 import java.util.HashMap;
 import java.util.Objects;
@@ -26,18 +29,22 @@ public class TeleopControllerV2 extends RobotStateController {
   private Toggle joystickToggle;
   private ConveyorStateMachine conveyorStateMachine;
   private EncoderSpeedCheck defaultTargetVelocity;
+  private IntakePosition intakePosition;
 
   public TeleopControllerV2(EncoderSpeedCheck defaultTargetVelocity, ConveyorStateMachine conveyorStateMachine) {
     this.tankDrive = new TankDrive("driverLeftAxisY", "driverRightAxisY");
     this.joystickToggle = new Toggle();
     this.conveyorStateMachine = conveyorStateMachine;
     this.defaultTargetVelocity = defaultTargetVelocity;
+    this.intakePosition = IntakePosition.UP;
+
   }
 
   @Override
   public RobotModel run(HashMap<String, InputContainer<?>> inputMap) {    
     RobotModel autoShooterModel;
     ShooterSubsystemModel.ShooterState shooterState;
+    IntakeState intakeState;
     // Manual Shooting
     if ((boolean)inputMap.get("driverRightShoulder").getValue()) {
       shooterState = ShooterSubsystemModel.ShooterState.SHOOT_DEFAULT;
@@ -59,20 +66,34 @@ public class TeleopControllerV2 extends RobotStateController {
       hangerState = HangerSystemModel.HangerState.STOPPED;
     }
 
+if(joystickToggle.run((boolean)inputMap.get("driverXButton").getValue())) { 
+  intakePosition = IntakePosition.DOWN; 
+  } else {
+    intakePosition = IntakePosition.UP;
+  }
+
+  if((boolean)inputMap.get("driverLeftShoulder").getValue()) {
+    intakeState = IntakeState.INTAKE;
+  } else {
+    intakeState = IntakeState.STOPPED;
+  }
+
+
     return new RobotModel.RobotModelBuilder()
                 .buildShooterModel(new ShooterSubsystemModel(shooterState))
                 .buildHangerModel(new HangerSystemModel(hangerState))
                 .buildDriveModel(this.tankDrive.run(inputMap).driveModel.get())
-                .buildConveyorModel(
-                  conveyorStateMachine.run(new ConveyorStateMachineInput(
-                    (double)inputMap.get("conveyorSonarFront").getValue() > 2,
-                    (double)inputMap.get("conveyorSonarMiddle").getValue() > 2,
-                    (double)inputMap.get("conveyorSonarTop").getValue() > 2,
-                    this.defaultTargetVelocity.isEncoderAtSpeed((double) inputMap.get("shooterEncoderVelocity").getValue()),
-                    (boolean)inputMap.get("driverRightShoulder").getValue()
-                  )
-                )
-              )
+              //   .buildConveyorModel(
+              //     conveyorStateMachine.run(new ConveyorStateMachineInput(
+              //       (double)inputMap.get("conveyorSonarFront").getValue() > 2,
+              //       (double)inputMap.get("conveyorSonarMiddle").getValue() > 2,
+              //       (double)inputMap.get("conveyorSonarTop").getValue() > 2,
+              //       this.defaultTargetVelocity.isEncoderAtSpeed((double) inputMap.get("shooterEncoderVelocity").getValue()),
+              //       (boolean)inputMap.get("driverRightShoulder").getValue()
+              //     )
+              //   )
+              // )
+              .buildIntakeModel(new IntakeSystemModel(intakeState, intakePosition))
               .build();
   }
 

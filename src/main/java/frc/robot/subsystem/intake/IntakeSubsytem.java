@@ -32,7 +32,7 @@ public class IntakeSubsytem extends RobotSubsystem<IntakeModel> {
       if (conveyorSystemModel.intakeState == IntakeSystemModel.IntakeState.STOPPED) {
         motorCommand = new GenericMotorPWM("intakeMotor", 0.0);
       } else if (conveyorSystemModel.intakeState == IntakeSystemModel.IntakeState.INTAKE) {
-        motorCommand = new GenericMotorPWM("intakeMotor", -1.0);
+        motorCommand = new GenericMotorPWM("intakeMotor", 1.0);
       } else if (conveyorSystemModel.intakeState == IntakeSystemModel.IntakeState.OUTTAKE) {
         motorCommand = new GenericMotorPWM("intakeMotor", 0.0);
       } else {
