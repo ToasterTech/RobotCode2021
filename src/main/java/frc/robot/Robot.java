@@ -10,6 +10,7 @@ package frc.robot;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.controllers.AutoModeController;
+import frc.robot.controllers.ConveyorStateMachine;
 import frc.robot.controllers.RobotStateController;
 import frc.robot.controllers.TeleopControllerV2;
 import frc.robot.devices.commands.DeviceOutputCommand;
@@ -20,6 +21,10 @@ import frc.robot.subsystem.drive.DriveSubsystem;
 import frc.robot.subsystem.drive.models.DifferentialDriveModel;
 import frc.robot.subsystem.hanger.HangerSubsystem;
 import frc.robot.subsystem.hanger.models.HangerSystemModel;
+import frc.robot.subsystem.intake.IntakeSubsytem;
+import frc.robot.subsystem.intake.models.IntakeSystemModel;
+import frc.robot.subsystem.intake.models.IntakeSystemModel.IntakePosition;
+import frc.robot.subsystem.intake.models.IntakeSystemModel.IntakeState;
 import frc.robot.subsystem.shooter.ShooterSubsystem;
 import frc.robot.subsystem.shooter.models.ShooterSubsystemModel;
 import frc.robot.util.EncoderSpeedCheck;
@@ -43,8 +48,10 @@ public class Robot extends TimedRobot {
   private ShooterSubsystem shooterSubsystem;
   private ConveyorSubsystem conveyorSubsystem;
   private HangerSubsystem hangerSubystem;
+  private IntakeSubsytem intakeSubsytem;
   private HardwareInterface hardwareInterface;
   private RobotStateController controller;
+  private ConveyorStateMachine conveyorStateMachine;
 
   /**
    * This function is run when the robot is first started up and should be used
@@ -56,7 +63,7 @@ public class Robot extends TimedRobot {
     this.shooterSubsystem = new ShooterSubsystem();
     this.conveyorSubsystem = new ConveyorSubsystem();
     this.hangerSubystem = new HangerSubsystem();
-
+    this.intakeSubsytem = new IntakeSubsytem();
     this.hardwareInterface = new HardwareInterface();
 
     SmartDashboard.putBoolean("operatorJoystickTopLeftButton", (boolean)false);
@@ -119,7 +126,10 @@ public class Robot extends TimedRobot {
 
   @Override
   public void teleopInit() {
-    this.controller = new TeleopControllerV2(new EncoderSpeedCheck(270, 5300)); //this.shooterSubsystem.calculateSetpointSpeed(ShooterSubsystemModel.ShooterState.SHOOT_DEFAULT)));
+    this.controller = new TeleopControllerV2(
+      new EncoderSpeedCheck(270, 5300),
+      this.conveyorStateMachine 
+      );//this.shooterSubsystem.calculateSetpointSpeed(ShooterSubsystemModel.ShooterState.SHOOT_DEFAULT)));
   }
 
   @Override
@@ -133,7 +143,7 @@ public class Robot extends TimedRobot {
     ));
     List<DeviceOutputCommand> hangerCommands = hangerSubystem.run(model.hangerModel.orElse(new HangerSystemModel(HangerSystemModel.HangerState.STOPPED)));
     List<DeviceOutputCommand> driveMotorCommands = driveSubsystem.run(model.driveModel.orElse(new DifferentialDriveModel(0.0, 0.0)));
-
+    List<DeviceOutputCommand> intakeCommands = intakeSubsytem.run(model.intakeModel.orElse(new IntakeSystemModel(IntakeState.STOPPED, IntakePosition.UP)));
 
     hardwareInterface.run(
         //Don't worry about this code, I know it is confusing, but it does make sense
@@ -141,6 +151,7 @@ public class Robot extends TimedRobot {
             hangerCommands,
             driveMotorCommands,
             shooterCommands, 
+            intakeCommands,
             conveyorCommands)
           .flatMap(Collection::stream)
           .collect(Collectors.toList())

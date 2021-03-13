@@ -60,7 +60,7 @@ public class HardwareInterface extends BaseHardwareInterface {
 
     this.outputMap.put("intakeDropLeft", new DeviceSolenoid(0));
     this.outputMap.put("intakeDropRight", new DeviceSolenoid(2));
-    this.outputMap.put("intakeMotor", new DeviceSolenoid(0));
+    this.outputMap.put("intakeMotor", new DevicePWMTalonSRX(0));
 
     // 
     DeviceCANSparkMax shooterMotor = new DeviceCANSparkMax(2, MotorType.kBrushless, Arrays.asList(
