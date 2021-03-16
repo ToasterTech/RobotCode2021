@@ -5,6 +5,8 @@ import frc.robot.subsystem.conveyor.models.ConveyorSystemModel.ConveyorState;
 
 import java.util.Optional;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+
 public class ConveyorStateMachine {
   public static class ConveyorStateMachineInput {
     public final boolean ballSensor1Trigger;
@@ -130,7 +132,7 @@ public class ConveyorStateMachine {
 
   public ConveyorSystemModel runShoot(ConveyorStateMachineInput input) {
     if (!input.ballSensor3Trigger && lastInput.orElse(input).ballSensor3Trigger) {
-      this.nextState = ConveyorControlStates.SHOOT;
+      this.nextState = ConveyorControlStates.DECREMENT_BALL_COUNT;
     } else {
       this.nextState = ConveyorControlStates.SHOOT;
     }
@@ -148,9 +150,12 @@ public class ConveyorStateMachine {
       this.nextState = ConveyorControlStates.IDLE;
     } else if (input.ballSensor1Trigger && !lastInput.orElse(input).ballSensor1Trigger) {
       this.nextState = ConveyorControlStates.INCREMENT_BALL_COUNT;
-    } else {
+    } else if (!input.shooterTrigger) {
+      this.nextState = ConveyorControlStates.IDLE;
+    }else {
       this.nextState = ConveyorControlStates.PREPARE_NEXT_BALL_FOR_SHOOT;
     }
+  
     return new ConveyorSystemModel(ConveyorState.INTAKE_SLOW);
   } 
 
@@ -161,6 +166,7 @@ public class ConveyorStateMachine {
   public ConveyorSystemModel run(ConveyorStateMachineInput input) {
     ConveyorSystemModel conveyorModel;
     this.currentState = this.nextState;
+    SmartDashboard.putString("ConveyorState", this.currentState.toString());
     switch (this.currentState) {
       case INIT:
         conveyorModel = runInit(input);
@@ -184,7 +190,7 @@ public class ConveyorStateMachine {
         conveyorModel = runWaitForShoot(input);
         break;
       case SHOOT:
-        conveyorModel = runShooterDecision(input);
+        conveyorModel = runShoot(input);
         break;
       case DECREMENT_BALL_COUNT:
         conveyorModel = runDecrementBallCount(input);
