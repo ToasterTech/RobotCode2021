@@ -21,6 +21,8 @@ import frc.robot.subsystem.intake.models.IntakeSystemModel.IntakeState;
 import java.util.HashMap;
 import java.util.Objects;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+
 /**
  * A Control the robot in teleop, based on intial testing.
  */
@@ -38,11 +40,12 @@ public class TeleopControllerV2 extends RobotStateController {
     this.defaultTargetVelocity = defaultTargetVelocity;
     this.intakePosition = IntakePosition.UP;
 
+    this.conveyorStateMachine = conveyorStateMachine;
+
   }
 
   @Override
   public RobotModel run(HashMap<String, InputContainer<?>> inputMap) {    
-    RobotModel autoShooterModel;
     ShooterSubsystemModel.ShooterState shooterState;
     IntakeState intakeState;
     // Manual Shooting
@@ -78,21 +81,31 @@ if(joystickToggle.run((boolean)inputMap.get("driverXButton").getValue())) {
     intakeState = IntakeState.STOPPED;
   }
 
+  SmartDashboard.putBoolean("ConveyorFrontTirggered", (double) inputMap.get("conveyorSonarFront").getValue() > 1.1);
+  SmartDashboard.putBoolean("ConveyorMiddleTirggered", (double) inputMap.get("conveyorSonarMiddle").getValue() > 2);
+  SmartDashboard.putBoolean("ConveyorTopTirggered", (double) inputMap.get("conveyorSonarTop").getValue() > 2);
+  SmartDashboard.putBoolean("ShooterAtSpeed", this.defaultTargetVelocity.isEncoderAtSpeed((double) inputMap.get("shooterEncoderVelocity").getValue()));
+  SmartDashboard.putBoolean("ShooterTriggered",  (boolean)inputMap.get("driverRightShoulder").getValue());
+
+
+  SmartDashboard.putNumber("ConveyorFrontValue", (double)inputMap.get("conveyorSonarFront").getValue());
+  SmartDashboard.putNumber("ConveyorMiddleValue", (double)inputMap.get("conveyorSonarMiddle").getValue());
+  SmartDashboard.putNumber("ConveyorTopValue", (double)inputMap.get("conveyorSonarTop").getValue());
 
     return new RobotModel.RobotModelBuilder()
                 .buildShooterModel(new ShooterSubsystemModel(shooterState))
                 .buildHangerModel(new HangerSystemModel(hangerState))
                 .buildDriveModel(this.tankDrive.run(inputMap).driveModel.get())
-              //   .buildConveyorModel(
-              //     conveyorStateMachine.run(new ConveyorStateMachineInput(
-              //       (double)inputMap.get("conveyorSonarFront").getValue() > 2,
-              //       (double)inputMap.get("conveyorSonarMiddle").getValue() > 2,
-              //       (double)inputMap.get("conveyorSonarTop").getValue() > 2,
-              //       this.defaultTargetVelocity.isEncoderAtSpeed((double) inputMap.get("shooterEncoderVelocity").getValue()),
-              //       (boolean)inputMap.get("driverRightShoulder").getValue()
-              //     )
-              //   )
-              // )
+                .buildConveyorModel(
+                  conveyorStateMachine.run(new ConveyorStateMachineInput(
+                    (double)inputMap.get("conveyorSonarFront").getValue() > 1.5,
+                    (double)inputMap.get("conveyorSonarMiddle").getValue() > 2,
+                    (double)inputMap.get("conveyorSonarTop").getValue() > 2,
+                    this.defaultTargetVelocity.isEncoderAtSpeed((double) inputMap.get("shooterEncoderVelocity").getValue()),
+                    (boolean)inputMap.get("driverRightShoulder").getValue()
+                  )
+                )
+              )
               .buildIntakeModel(new IntakeSystemModel(intakeState, intakePosition))
               .build();
   }

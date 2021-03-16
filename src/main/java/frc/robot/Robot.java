@@ -65,6 +65,7 @@ public class Robot extends TimedRobot {
     this.hangerSubystem = new HangerSubsystem();
     this.intakeSubsytem = new IntakeSubsytem();
     this.hardwareInterface = new HardwareInterface();
+    this.conveyorStateMachine = new ConveyorStateMachine();
 
     SmartDashboard.putBoolean("operatorJoystickTopLeftButton", (boolean)false);
     SmartDashboard.putBoolean("operatorJoystickTopRightButton", (boolean)false);
@@ -118,6 +119,7 @@ public class Robot extends TimedRobot {
     SmartDashboard.putBoolean("operatorBaseLeftUpperButton", (boolean)inputMap.get("operatorBaseLeftUpperButton").getValue());
     SmartDashboard.putBoolean("operatorBaseLeftLowerButton", (boolean)inputMap.get("operatorBaseLeftLowerButton").getValue());
 
+
     SmartDashboard.putNumber("ShooterSpeed", (double)inputMap.get("shooterEncoderVelocity").getValue());
     SmartDashboard.putNumber("ConveyorSpeed", (double)inputMap.get("conveyorEncoderVelocity").getValue());
     SmartDashboard.putNumber("currentTime", (double)inputMap.get("currentTime").getValue());
@@ -127,7 +129,7 @@ public class Robot extends TimedRobot {
   @Override
   public void teleopInit() {
     this.controller = new TeleopControllerV2(
-      new EncoderSpeedCheck(270, 5300),
+      new EncoderSpeedCheck(270, 5600),
       this.conveyorStateMachine 
       );//this.shooterSubsystem.calculateSetpointSpeed(ShooterSubsystemModel.ShooterState.SHOOT_DEFAULT)));
   }

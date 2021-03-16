@@ -27,7 +27,7 @@ public class ConveyorSubsystem extends RobotSubsystem<ConveyorModel> {
       ConveyorSystemModel conveyorSystemModel = (ConveyorSystemModel) input;
       switch (conveyorSystemModel.conveyorState) {
         case INTAKE_SLOW: 
-          motorCommand = new GenericMotorCAN("conveyorMotor", -0.3); 
+          motorCommand = new GenericMotorCAN("conveyorMotor", -0.2); 
           break;
         case INTAKE_FAST: 
           motorCommand = new GenericMotorCAN("conveyorMotor", -1.0);
