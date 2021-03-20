@@ -13,13 +13,15 @@ public class ConveyorStateMachine {
     public final boolean ballSensor2Trigger;
     public final boolean ballSensor3Trigger;
     public final boolean shooterAtSpeed;
+    public final boolean ballSensor4Trigger;
     public final boolean shooterTrigger;
 
-    public ConveyorStateMachineInput(boolean ballSensor1, boolean ballSensor2, boolean ballSensor3,
+    public ConveyorStateMachineInput(boolean ballSensor1, boolean ballSensor2, boolean ballSensor3, boolean ballSensor4,
         boolean shooterAtSpeed, boolean shooterTrigger) {
       this.ballSensor1Trigger = ballSensor1;
       this.ballSensor2Trigger = ballSensor2;
       this.ballSensor3Trigger = ballSensor3;
+      this.ballSensor4Trigger = ballSensor4;
       this.shooterAtSpeed = shooterAtSpeed;
       this.shooterTrigger = shooterTrigger;
     }
@@ -29,9 +31,9 @@ public class ConveyorStateMachine {
     //Start States
     INIT, 
     //Intake States
-    IDLE, INCREMENT_BALL_COUNT, INTAKE_NEW_BALL, INTAKE_EXISTING_BALL, 
-    //Conveyor States
-    SHOOTER_DECISION, WAIT_FOR_SHOOTER, SHOOT, DECREMENT_BALL_COUNT, PREPARE_NEXT_BALL_FOR_SHOOT
+    IDLE, INCREMENT_BALL_COUNT, INTAKE_NEW_BALL, INTAKE_EXISTING_BALL, MOVE_TO_INTAKE_CHECK, OUTAKE_UNTIL_RESET,
+    //Shoot States
+    SHOOTER_DECISION, WAIT_FOR_SHOOTER, SHOOT, DECREMENT_BALL_COUNT, PREPARE_NEXT_BALL_FOR_SHOOT, 
   }
 
   private ConveyorControlStates nextState;
@@ -105,12 +107,31 @@ public class ConveyorStateMachine {
 
   public ConveyorSystemModel runIntakeExistingBallState(ConveyorStateMachineInput input) {
     if (!input.ballSensor2Trigger && lastInput.orElse(input).ballSensor2Trigger) {
-      this.nextState = ConveyorControlStates.INTAKE_NEW_BALL;
+      this.nextState = ConveyorControlStates.MOVE_TO_INTAKE_CHECK;
     } else if (input.ballSensor3Trigger) {
       this.nextState = ConveyorControlStates.IDLE;
     }
     return new ConveyorSystemModel(ConveyorState.INTAKE_SLOW);
   }
+
+  public ConveyorSystemModel runMoveToIntakeCheckState(ConveyorStateMachineInput input) {
+    if (!input.ballSensor4Trigger && lastInput.orElse(input).ballSensor4Trigger && !input.ballSensor2Trigger) {
+      this.nextState = ConveyorControlStates.OUTAKE_UNTIL_RESET;
+    } else if (input.ballSensor2Trigger) {
+      this.nextState = ConveyorControlStates.IDLE;
+    }
+    return new ConveyorSystemModel(ConveyorState.INTAKE_SLOW);
+  }
+
+  public ConveyorSystemModel runOutakeUntilReset(ConveyorStateMachineInput input) {
+    if (!input.ballSensor2Trigger && lastInput.orElse(input).ballSensor2Trigger) {
+      this.nextState = ConveyorControlStates.IDLE;
+    } else {
+      this.nextState = ConveyorControlStates.OUTAKE_UNTIL_RESET;
+    }
+    return new ConveyorSystemModel(ConveyorState.OUTAKE);
+  }
+
 
   public ConveyorSystemModel runShooterDecision(ConveyorStateMachineInput input) {
     if (input.ballSensor3Trigger) {
@@ -182,6 +203,12 @@ public class ConveyorStateMachine {
         break;
       case INTAKE_EXISTING_BALL:
         conveyorModel = runIntakeExistingBallState(input);
+        break;
+      case MOVE_TO_INTAKE_CHECK:
+        conveyorModel = runMoveToIntakeCheckState(input);
+        break;
+      case OUTAKE_UNTIL_RESET:
+        conveyorModel = runOutakeUntilReset(input);
         break;
       case SHOOTER_DECISION:
         conveyorModel = runShooterDecision(input);
