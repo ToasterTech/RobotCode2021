@@ -81,9 +81,9 @@ if(joystickToggle.run((boolean)inputMap.get("driverXButton").getValue())) {
     intakeState = IntakeState.STOPPED;
   }
 
-  SmartDashboard.putBoolean("ConveyorFrontTirggered", (double) inputMap.get("conveyorSonarFront").getValue() > 1.1);
-  SmartDashboard.putBoolean("ConveyorMiddleTirggered", (double) inputMap.get("conveyorSonarMiddle").getValue() > 2);
-  SmartDashboard.putBoolean("ConveyorTopTirggered", (double) inputMap.get("conveyorSonarTop").getValue() > 2);
+  SmartDashboard.putBoolean("ConveyorFrontTirggered", (double) inputMap.get("conveyorSonarFront").getValue() > 1.5);
+  SmartDashboard.putBoolean("ConveyorMiddleTirggered", (double) inputMap.get("conveyorSonarMiddle").getValue() > 1.5);
+  SmartDashboard.putBoolean("ConveyorTopTirggered", (double) inputMap.get("conveyorSonarTop").getValue() > 1.5);
   SmartDashboard.putBoolean("ShooterAtSpeed", this.defaultTargetVelocity.isEncoderAtSpeed((double) inputMap.get("shooterEncoderVelocity").getValue()));
   SmartDashboard.putBoolean("ShooterTriggered",  (boolean)inputMap.get("driverRightShoulder").getValue());
 
@@ -99,8 +99,9 @@ if(joystickToggle.run((boolean)inputMap.get("driverXButton").getValue())) {
                 .buildConveyorModel(
                   conveyorStateMachine.run(new ConveyorStateMachineInput(
                     (double)inputMap.get("conveyorSonarFront").getValue() > 1.5,
-                    (double)inputMap.get("conveyorSonarMiddle").getValue() > 2,
-                    (double)inputMap.get("conveyorSonarTop").getValue() > 2,
+                    (double)inputMap.get("conveyorSonarMiddle").getValue() > 1.5,
+                    (double)inputMap.get("conveyorSonarTop").getValue() > 1.5,
+                    (double)inputMap.get("conveyorSonarIntakeCheck").getValue() > 1.5,
                     this.defaultTargetVelocity.isEncoderAtSpeed((double) inputMap.get("shooterEncoderVelocity").getValue()),
                     (boolean)inputMap.get("driverRightShoulder").getValue()
                   )

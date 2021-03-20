@@ -62,6 +62,7 @@ public class HardwareInterface extends BaseHardwareInterface {
     this.outputMap.put("intakeDropRight", new DeviceSolenoid(2));
     this.outputMap.put("intakeMotor", new DevicePWMTalonSRX(0));
 
+
     // 
     DeviceCANSparkMax shooterMotor = new DeviceCANSparkMax(2, MotorType.kBrushless, Arrays.asList(
         new DeviceCANSparkMax(1, MotorType.kBrushless, true)
@@ -104,6 +105,7 @@ public class HardwareInterface extends BaseHardwareInterface {
     this.inputMap.put("conveyorSonarFront", new UltrasonicSensor(2));
     this.inputMap.put("conveyorSonarMiddle", new UltrasonicSensor(1));
     this.inputMap.put("conveyorSonarTop", new UltrasonicSensor(0));
+    this.inputMap.put("conveyorSonarIntakeCheck", new UltrasonicSensor(3));
   }
 
   /**

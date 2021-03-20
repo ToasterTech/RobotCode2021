@@ -73,7 +73,7 @@ public class ConveyorLogger {
         (double) inputMap.get("conveyorSonarTop").getValue(),
         (double) inputMap.get("shooterEncoderVelocity").getValue(),
         (boolean) inputMap.get("driverRightShoulder").getValue()));
-    ConveyorStateMachineInput input = conveyorStateMachine.getLastInput().orElse(new ConveyorStateMachineInput(false, false, false, false, false));
+    ConveyorStateMachineInput input = conveyorStateMachine.getLastInput().orElse(new ConveyorStateMachineInput(false, false, false, false, false, false));
     logger.info(String.format(
         "conveyor::current_state:%1$s::next_state:%2$s::sensor_1:%3$b::sensor_2:%4$b::sensor_3:%5$b::shooter_at_speed:%6$b::shooter_trigger:%7$b",
         conveyorStateMachine.getCurrentState().toString(),
