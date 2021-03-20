@@ -14,6 +14,7 @@ import frc.robot.controllers.ConveyorStateMachine;
 import frc.robot.controllers.RobotStateController;
 import frc.robot.controllers.TeleopControllerV2;
 import frc.robot.devices.commands.DeviceOutputCommand;
+import frc.robot.logging.ConveyorLogger;
 import frc.robot.models.RobotModel;
 import frc.robot.subsystem.conveyor.ConveyorSubsystem;
 import frc.robot.subsystem.conveyor.models.ConveyorSystemModel;
@@ -52,7 +53,7 @@ public class Robot extends TimedRobot {
   private HardwareInterface hardwareInterface;
   private RobotStateController controller;
   private ConveyorStateMachine conveyorStateMachine;
-
+  private ConveyorLogger conveyorLogger;
   /**
    * This function is run when the robot is first started up and should be used
    * for any initialization code.
@@ -66,6 +67,7 @@ public class Robot extends TimedRobot {
     this.intakeSubsytem = new IntakeSubsytem();
     this.hardwareInterface = new HardwareInterface();
     this.conveyorStateMachine = new ConveyorStateMachine();
+    this.conveyorLogger = new ConveyorLogger("/home/lvuser/conveyor.log");
 
     SmartDashboard.putBoolean("operatorJoystickTopLeftButton", (boolean)false);
     SmartDashboard.putBoolean("operatorJoystickTopRightButton", (boolean)false);
@@ -169,6 +171,8 @@ public class Robot extends TimedRobot {
     SmartDashboard.putNumber("ConveyorSpeed", (double)inputMap.get("conveyorEncoderVelocity").getValue());
     SmartDashboard.putNumber("currentTime", (double)inputMap.get("currentTime").getValue());
     SmartDashboard.putBoolean("hangerSwitch", (boolean)inputMap.get("hangerSwitch").getValue());
+    
+    this.conveyorLogger.log(inputMap, conveyorStateMachine);
   }
 
   @Override
