@@ -86,7 +86,7 @@ if(joystickToggle.run((boolean)inputMap.get("driverXButton").getValue())) {
   SmartDashboard.putBoolean("ConveyorTopTirggered", (double) inputMap.get("conveyorSonarTop").getValue() > 1.5);
   SmartDashboard.putBoolean("ShooterAtSpeed", this.defaultTargetVelocity.isEncoderAtSpeed((double) inputMap.get("shooterEncoderVelocity").getValue()));
   SmartDashboard.putBoolean("ShooterTriggered",  (boolean)inputMap.get("driverRightShoulder").getValue());
-
+  SmartDashboard.putNumber("BallCount", conveyorStateMachine.getBallCount());
 
   SmartDashboard.putNumber("ConveyorFrontValue", (double)inputMap.get("conveyorSonarFront").getValue());
   SmartDashboard.putNumber("ConveyorMiddleValue", (double)inputMap.get("conveyorSonarMiddle").getValue());
