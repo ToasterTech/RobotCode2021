@@ -124,7 +124,7 @@ public class ConveyorStateMachine {
   }
 
   public ConveyorSystemModel runOutakeUntilReset(ConveyorStateMachineInput input) {
-    if (!input.ballSensor2Trigger && lastInput.orElse(input).ballSensor2Trigger) {
+    if (input.ballSensor2Trigger && !lastInput.orElse(input).ballSensor2Trigger) {
       this.nextState = ConveyorControlStates.IDLE;
     } else {
       this.nextState = ConveyorControlStates.OUTAKE_UNTIL_RESET;
