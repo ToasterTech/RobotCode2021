@@ -21,13 +21,11 @@ import java.util.Objects;
  * A Control the robot in teleop, based on intial testing.
  */
 public class TeleopControllerV2 extends RobotStateController {
-  private TankDrive tankDrive;
-  private AutomaticShoot autoShooerController;
+  private TankDrive drive;
   private Toggle joystickToggle;
 
-  public TeleopControllerV2(EncoderSpeedCheck defaultTargetVelocity) {
-    this.tankDrive = new TankDrive("driverLeftAxisY", "driverRightAxisY");
-    this.autoShooerController = new AutomaticShoot(defaultTargetVelocity);
+  public TeleopControllerV2(EncoderSpeedCheck defaultTargetVelocity, ConveyorStateMachine conveyorStateMachine) {
+    this.drive = new TankDrive("driverLeftAxisY", "driverRightAxisY");
     this.joystickToggle = new Toggle();
   }
 
@@ -37,7 +35,7 @@ public class TeleopControllerV2 extends RobotStateController {
     ShooterSubsystemModel.ShooterState shooterState;
     // Auto Shooting
     if ((boolean)inputMap.get("driverLeftShoulder").getValue()) {
-      autoShooterModel = autoShooerController.run(inputMap);
+      autoShooterModel = autoShooterController.run(inputMap);
     } else {
       autoShooterModel = new RobotModel.RobotModelBuilder().build();
     }
@@ -65,12 +63,24 @@ public class TeleopControllerV2 extends RobotStateController {
     return new RobotModel.RobotModelBuilder()
                 .buildShooterModel(autoShooterModel.shooterModel.orElse(new ShooterSubsystemModel(shooterState)))
                 .buildHangerModel(new HangerSystemModel(hangerState))
-                .buildDriveModel(this.tankDrive.run(inputMap).driveModel.get())
-                .build();
+                .buildDriveModel(this.drive.run(inputMap).driveModel.get())
+                .buildConveyorModel(
+                  conveyorStateMachine.run(new ConveyorStateMachineInput(
+                    (double)inputMap.get("conveyorSonarFront").getValue() > 1.5,
+                    (double)inputMap.get("conveyorSonarMiddle").getValue() > 1.5,
+                    (double)inputMap.get("conveyorSonarTop").getValue() > 1.5,
+                    (double)inputMap.get("conveyorSonarIntakeCheck").getValue() > 1.5,
+                    this.defaultTargetVelocity.isEncoderAtSpeed((double) inputMap.get("shooterEncoderVelocity").getValue()),
+                    (boolean)inputMap.get("driverRightShoulder").getValue()
+                  )
+                )
+              )
+              .buildIntakeModel(new IntakeSystemModel(intakeState, intakePosition))
+              .build();
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(this.tankDrive, this.getClass());
+    return Objects.hash(this.drive, this.getClass());
   }
 }

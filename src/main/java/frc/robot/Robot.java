@@ -119,7 +119,10 @@ public class Robot extends TimedRobot {
 
   @Override
   public void teleopInit() {
-    this.controller = new TeleopControllerV2(new EncoderSpeedCheck(270, 5300)); //this.shooterSubsystem.calculateSetpointSpeed(ShooterSubsystemModel.ShooterState.SHOOT_DEFAULT)));
+    this.controller = new TeleopControllerV2(
+      new EncoderSpeedCheck(200, 5600),
+      this.conveyorStateMachine 
+      );//this.shooterSubsystem.calculateSetpointSpeed(ShooterSubsystemModel.ShooterState.SHOOT_DEFAULT)));
   }
 
   @Override
