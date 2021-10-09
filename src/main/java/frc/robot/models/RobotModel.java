@@ -10,6 +10,7 @@ package frc.robot.models;
 import frc.robot.subsystem.conveyor.models.ConveyorModel;
 import frc.robot.subsystem.drive.models.DriveModel;
 import frc.robot.subsystem.hanger.models.HangerModel;
+import frc.robot.subsystem.light.models.LightModel;
 import frc.robot.subsystem.shooter.models.ShooterModel;
 
 import java.util.Objects;
@@ -23,12 +24,15 @@ public class RobotModel extends Model {
   public final Optional<ShooterModel> shooterModel;
   public final Optional<DriveModel> driveModel;
   public final Optional<HangerModel> hangerModel;
+  public final Optional<LightModel> lightModel;
+
 
   public static class RobotModelBuilder {
     private Optional<ConveyorModel> conveyorModel = Optional.empty();
     private Optional<ShooterModel> shooterModel = Optional.empty();
     private Optional<DriveModel> driveModel = Optional.empty();
     private Optional<HangerModel> hangerModel = Optional.empty();
+    private Optional<LightModel> lightModel = Optional.empty();
 
     public RobotModelBuilder buildConveyorModel(ConveyorModel model) {
       this.conveyorModel = Optional.of(model);
@@ -49,6 +53,10 @@ public class RobotModel extends Model {
       this.hangerModel = Optional.of(model);
       return this;
     }
+    public RobotModelBuilder buildLightModel(LightModel model) {
+      this.lightModel = Optional.of(model);
+      return this;
+    }
 
     public RobotModel build() {
       return new RobotModel(this);
@@ -60,6 +68,7 @@ public class RobotModel extends Model {
     this.shooterModel = builder.shooterModel;
     this.driveModel = builder.driveModel;
     this.hangerModel = builder.hangerModel;
+    this.lightModel = builder.lightModel;
   }
 
   @Override

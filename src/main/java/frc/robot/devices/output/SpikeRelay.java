@@ -4,7 +4,7 @@ import edu.wpi.first.wpilibj.Relay;
 import frc.robot.devices.commands.DeviceOutputCommand;
 import frc.robot.devices.commands.RelayCommand;
 
-public abstract class SpikeRelay extends DeviceOutput {
+public class SpikeRelay extends DeviceOutput {
   public enum Direction {
     Forward(Relay.Direction.kForward), Backward(Relay.Direction.kReverse);
 

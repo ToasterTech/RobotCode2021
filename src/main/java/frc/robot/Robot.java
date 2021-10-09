@@ -20,6 +20,8 @@ import frc.robot.subsystem.drive.DriveSubsystem;
 import frc.robot.subsystem.drive.models.DifferentialDriveModel;
 import frc.robot.subsystem.hanger.HangerSubsystem;
 import frc.robot.subsystem.hanger.models.HangerSystemModel;
+import frc.robot.subsystem.light.LightSubsystem;
+import frc.robot.subsystem.light.models.LightSubsystemModel;
 import frc.robot.subsystem.shooter.ShooterSubsystem;
 import frc.robot.subsystem.shooter.models.ShooterSubsystemModel;
 import frc.robot.util.EncoderSpeedCheck;
@@ -43,6 +45,9 @@ public class Robot extends TimedRobot {
   private ShooterSubsystem shooterSubsystem;
   private ConveyorSubsystem conveyorSubsystem;
   private HangerSubsystem hangerSubystem;
+  private LightSubsystem lightSubsystem;
+
+ 
   private HardwareInterface hardwareInterface;
   private RobotStateController controller;
 
@@ -56,6 +61,7 @@ public class Robot extends TimedRobot {
     this.shooterSubsystem = new ShooterSubsystem();
     this.conveyorSubsystem = new ConveyorSubsystem();
     this.hangerSubystem = new HangerSubsystem();
+    this.lightSubsystem = new LightSubsystem();
 
     this.hardwareInterface = new HardwareInterface();
 
@@ -133,6 +139,8 @@ public class Robot extends TimedRobot {
     ));
     List<DeviceOutputCommand> hangerCommands = hangerSubystem.run(model.hangerModel.orElse(new HangerSystemModel(HangerSystemModel.HangerState.STOPPED)));
     List<DeviceOutputCommand> driveMotorCommands = driveSubsystem.run(model.driveModel.orElse(new DifferentialDriveModel(0.0, 0.0)));
+    List<DeviceOutputCommand> lightCommands = lightSubsystem.run(model.lightModel.orElse(new LightSubsystemModel(LightSubsystemModel.LightState.OFF)));
+
 
 
     hardwareInterface.run(
@@ -141,7 +149,8 @@ public class Robot extends TimedRobot {
             hangerCommands,
             driveMotorCommands,
             shooterCommands, 
-            conveyorCommands)
+            conveyorCommands,
+            lightCommands)
           .flatMap(Collection::stream)
           .collect(Collectors.toList())
     );
