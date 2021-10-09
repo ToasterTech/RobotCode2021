@@ -1,8 +1,9 @@
 package frc.robot.devices.commands;
 
+import edu.wpi.first.wpilibj.Relay;
+
 import java.util.Objects;
 
-import edu.wpi.first.wpilibj.Relay;
 
 public class RelayCommand extends DeviceOutputCommand {
   public enum RelayState {
