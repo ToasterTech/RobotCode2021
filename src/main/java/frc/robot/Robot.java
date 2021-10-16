@@ -58,6 +58,7 @@ public class Robot extends TimedRobot {
   private RobotStateController controller;
   private ConveyorStateMachine conveyorStateMachine;
   private ConveyorLogger conveyorLogger;
+
   /**
    * This function is run when the robot is first started up and should be used
    * for any initialization code.
@@ -74,18 +75,17 @@ public class Robot extends TimedRobot {
     this.conveyorStateMachine = new ConveyorStateMachine();
     this.conveyorLogger = new ConveyorLogger("/home/lvuser/conveyor.log");
 
-    SmartDashboard.putBoolean("operatorJoystickTopLeftButton", (boolean)false);
-    SmartDashboard.putBoolean("operatorJoystickTopRightButton", (boolean)false);
-    SmartDashboard.putBoolean("operatorJoystickTrigger", (boolean)false);
-    SmartDashboard.putBoolean("operatorBaseRightUpperButton", (boolean)false);
-    SmartDashboard.putBoolean("operatorBaseLeftUpperButton", (boolean)false);
-    SmartDashboard.putBoolean("operatorBaseLeftLowerButton", (boolean)false);
+    SmartDashboard.putBoolean("operatorJoystickTopLeftButton", (boolean) false);
+    SmartDashboard.putBoolean("operatorJoystickTopRightButton", (boolean) false);
+    SmartDashboard.putBoolean("operatorJoystickTrigger", (boolean) false);
+    SmartDashboard.putBoolean("operatorBaseRightUpperButton", (boolean) false);
+    SmartDashboard.putBoolean("operatorBaseLeftUpperButton", (boolean) false);
+    SmartDashboard.putBoolean("operatorBaseLeftLowerButton", (boolean) false);
 
-
-    SmartDashboard.putNumber("ShooterSpeed", (double)0.0);
-    SmartDashboard.putNumber("ConveyorSpeed", (double)0.0);
-    SmartDashboard.putNumber("currentTime", (double)0.0);
-    SmartDashboard.putBoolean("hangerSwitch", (boolean)false);
+    SmartDashboard.putNumber("ShooterSpeed", (double) 0.0);
+    SmartDashboard.putNumber("ConveyorSpeed", (double) 0.0);
+    SmartDashboard.putNumber("currentTime", (double) 0.0);
+    SmartDashboard.putBoolean("hangerSwitch", (boolean) false);
 
   }
 
@@ -100,45 +100,42 @@ public class Robot extends TimedRobot {
     HashMap<String, InputContainer<?>> inputMap = hardwareInterface.getInputValueMap();
     RobotModel model = controller.run(inputMap);
 
-    List<DeviceOutputCommand> shooterCommands = shooterSubsystem.run(model.shooterModel.orElse(new ShooterSubsystemModel(ShooterSubsystemModel.ShooterState.STOPPED)));
-    List<DeviceOutputCommand> conveyorCommands = conveyorSubsystem.run(model.conveyorModel.orElse(
-        new ConveyorSystemModel()
-    ));
-    List<DeviceOutputCommand> hangerCommands = hangerSubystem.run(model.hangerModel.orElse(new HangerSystemModel(HangerSystemModel.HangerState.STOPPED)));
-    List<DeviceOutputCommand> driveMotorCommands = driveSubsystem.run(model.driveModel.orElse(new DifferentialDriveModel(0.0, 0.0)));
-
+    List<DeviceOutputCommand> shooterCommands = shooterSubsystem
+        .run(model.shooterModel.orElse(new ShooterSubsystemModel(ShooterSubsystemModel.ShooterState.STOPPED)));
+    List<DeviceOutputCommand> conveyorCommands = conveyorSubsystem
+        .run(model.conveyorModel.orElse(new ConveyorSystemModel()));
+    List<DeviceOutputCommand> hangerCommands = hangerSubystem
+        .run(model.hangerModel.orElse(new HangerSystemModel(HangerSystemModel.HangerState.STOPPED)));
+    List<DeviceOutputCommand> driveMotorCommands = driveSubsystem
+        .run(model.driveModel.orElse(new DifferentialDriveModel(0.0, 0.0)));
 
     hardwareInterface.run(
-        //Don't worry about this code, I know it is confusing, but it does make sense
-        Stream.of(
-            hangerCommands,
-            driveMotorCommands,
-            shooterCommands, 
-            conveyorCommands)
-          .flatMap(Collection::stream)
-          .collect(Collectors.toList())
-    );
+        // Don't worry about this code, I know it is confusing, but it does make sense
+        Stream.of(hangerCommands, driveMotorCommands, shooterCommands, conveyorCommands).flatMap(Collection::stream)
+            .collect(Collectors.toList()));
 
-    SmartDashboard.putBoolean("operatorJoystickTopLeftButton", (boolean)inputMap.get("operatorJoystickTopLeftButton").getValue());
-    SmartDashboard.putBoolean("operatorJoystickTopRightButton", (boolean)inputMap.get("operatorJoystickTopRightButton").getValue());
-    SmartDashboard.putBoolean("operatorJoystickTrigger", (boolean)inputMap.get("operatorJoystickTrigger").getValue());
-    SmartDashboard.putBoolean("operatorBaseRightUpperButton", (boolean)inputMap.get("operatorBaseRightUpperButton").getValue());
-    SmartDashboard.putBoolean("operatorBaseLeftUpperButton", (boolean)inputMap.get("operatorBaseLeftUpperButton").getValue());
-    SmartDashboard.putBoolean("operatorBaseLeftLowerButton", (boolean)inputMap.get("operatorBaseLeftLowerButton").getValue());
+    SmartDashboard.putBoolean("operatorJoystickTopLeftButton",
+        (boolean) inputMap.get("operatorJoystickTopLeftButton").getValue());
+    SmartDashboard.putBoolean("operatorJoystickTopRightButton",
+        (boolean) inputMap.get("operatorJoystickTopRightButton").getValue());
+    SmartDashboard.putBoolean("operatorJoystickTrigger", (boolean) inputMap.get("operatorJoystickTrigger").getValue());
+    SmartDashboard.putBoolean("operatorBaseRightUpperButton",
+        (boolean) inputMap.get("operatorBaseRightUpperButton").getValue());
+    SmartDashboard.putBoolean("operatorBaseLeftUpperButton",
+        (boolean) inputMap.get("operatorBaseLeftUpperButton").getValue());
+    SmartDashboard.putBoolean("operatorBaseLeftLowerButton",
+        (boolean) inputMap.get("operatorBaseLeftLowerButton").getValue());
 
-
-    SmartDashboard.putNumber("ShooterSpeed", (double)inputMap.get("shooterEncoderVelocity").getValue());
-    SmartDashboard.putNumber("ConveyorSpeed", (double)inputMap.get("conveyorEncoderVelocity").getValue());
-    SmartDashboard.putNumber("currentTime", (double)inputMap.get("currentTime").getValue());
-    SmartDashboard.putBoolean("hangerSwitch", (boolean)inputMap.get("hangerSwitch").getValue());
+    SmartDashboard.putNumber("ShooterSpeed", (double) inputMap.get("shooterEncoderVelocity").getValue());
+    SmartDashboard.putNumber("ConveyorSpeed", (double) inputMap.get("conveyorEncoderVelocity").getValue());
+    SmartDashboard.putNumber("currentTime", (double) inputMap.get("currentTime").getValue());
+    SmartDashboard.putBoolean("hangerSwitch", (boolean) inputMap.get("hangerSwitch").getValue());
   }
 
+  // this.shooterSubsystem.calculateSetpointSpeed(ShooterSubsystemModel.ShooterState.SHOOT_DEFAULT)));
   @Override
   public void teleopInit() {
-    this.controller = new TeleopControllerV2(
-      new EncoderSpeedCheck(270, 5600),
-      this.conveyorStateMachine 
-      );//this.shooterSubsystem.calculateSetpointSpeed(ShooterSubsystemModel.ShooterState.SHOOT_DEFAULT)));
+    this.controller = new TeleopControllerV2(new EncoderSpeedCheck(270, 5600), this.conveyorStateMachine);
   }
 
   @Override
@@ -146,40 +143,41 @@ public class Robot extends TimedRobot {
     HashMap<String, InputContainer<?>> inputMap = hardwareInterface.getInputValueMap();
     RobotModel model = controller.run(inputMap);
 
-    List<DeviceOutputCommand> shooterCommands = shooterSubsystem.run(model.shooterModel.orElse(new ShooterSubsystemModel(ShooterSubsystemModel.ShooterState.STOPPED)));
-    List<DeviceOutputCommand> conveyorCommands = conveyorSubsystem.run(model.conveyorModel.orElse(
-        new ConveyorSystemModel()
-    ));
-    List<DeviceOutputCommand> hangerCommands = hangerSubystem.run(model.hangerModel.orElse(new HangerSystemModel(HangerSystemModel.HangerState.STOPPED)));
-    List<DeviceOutputCommand> driveMotorCommands = driveSubsystem.run(model.driveModel.orElse(new DifferentialDriveModel(0.0, 0.0)));
-    List<DeviceOutputCommand> intakeCommands = intakeSubsytem.run(model.intakeModel.orElse(new IntakeSystemModel(IntakeState.STOPPED, IntakePosition.UP)));
+    List<DeviceOutputCommand> shooterCommands = shooterSubsystem
+        .run(model.shooterModel.orElse(new ShooterSubsystemModel(ShooterSubsystemModel.ShooterState.STOPPED)));
+    List<DeviceOutputCommand> conveyorCommands = conveyorSubsystem
+        .run(model.conveyorModel.orElse(new ConveyorSystemModel()));
+    List<DeviceOutputCommand> hangerCommands = hangerSubystem
+        .run(model.hangerModel.orElse(new HangerSystemModel(HangerSystemModel.HangerState.STOPPED)));
+    List<DeviceOutputCommand> driveMotorCommands = driveSubsystem
+        .run(model.driveModel.orElse(new DifferentialDriveModel(0.0, 0.0)));
+    List<DeviceOutputCommand> intakeCommands = intakeSubsytem
+        .run(model.intakeModel.orElse(new IntakeSystemModel(IntakeState.STOPPED, IntakePosition.UP)));
 
-    List<DeviceOutputCommand> lightCommands = lightSubsystem.run(model.lightModel.orElse(new LightSubsystemModel(LightSubsystemModel.LightState.OFF)));
+    List<DeviceOutputCommand> lightCommands = lightSubsystem
+        .run(model.lightModel.orElse(new LightSubsystemModel(LightSubsystemModel.LightState.OFF)));
 
     hardwareInterface.run(
-        //Don't worry about this code, I know it is confusing, but it does make sense
-        Stream.of(
-            hangerCommands,
-            driveMotorCommands,
-            shooterCommands, 
-            intakeCommands,
-            conveyorCommands,
-            lightCommands)
-          .flatMap(Collection::stream)
-          .collect(Collectors.toList())
-    );
-    SmartDashboard.putBoolean("operatorJoystickTopLeftButton", (boolean)inputMap.get("operatorJoystickTopLeftButton").getValue());
-    SmartDashboard.putBoolean("operatorJoystickTopRightButton", (boolean)inputMap.get("operatorJoystickTopRightButton").getValue());
-    SmartDashboard.putBoolean("operatorJoystickTrigger", (boolean)inputMap.get("operatorJoystickTrigger").getValue());
-    SmartDashboard.putBoolean("operatorBaseRightUpperButton", (boolean)inputMap.get("operatorBaseRightUpperButton").getValue());
-    SmartDashboard.putBoolean("operatorBaseLeftUpperButton", (boolean)inputMap.get("operatorBaseLeftUpperButton").getValue());
-    SmartDashboard.putBoolean("operatorBaseLeftLowerButton", (boolean)inputMap.get("operatorBaseLeftLowerButton").getValue());
+        // Don't worry about this code, I know it is confusing, but it does make sense
+        Stream.of(hangerCommands, driveMotorCommands, shooterCommands, intakeCommands, conveyorCommands, lightCommands)
+            .flatMap(Collection::stream).collect(Collectors.toList()));
+    SmartDashboard.putBoolean("operatorJoystickTopLeftButton",
+        (boolean) inputMap.get("operatorJoystickTopLeftButton").getValue());
+    SmartDashboard.putBoolean("operatorJoystickTopRightButton",
+        (boolean) inputMap.get("operatorJoystickTopRightButton").getValue());
+    SmartDashboard.putBoolean("operatorJoystickTrigger", (boolean) inputMap.get("operatorJoystickTrigger").getValue());
+    SmartDashboard.putBoolean("operatorBaseRightUpperButton",
+        (boolean) inputMap.get("operatorBaseRightUpperButton").getValue());
+    SmartDashboard.putBoolean("operatorBaseLeftUpperButton",
+        (boolean) inputMap.get("operatorBaseLeftUpperButton").getValue());
+    SmartDashboard.putBoolean("operatorBaseLeftLowerButton",
+        (boolean) inputMap.get("operatorBaseLeftLowerButton").getValue());
 
-    SmartDashboard.putNumber("ShooterSpeed", (double)inputMap.get("shooterEncoderVelocity").getValue());
-    SmartDashboard.putNumber("ConveyorSpeed", (double)inputMap.get("conveyorEncoderVelocity").getValue());
-    SmartDashboard.putNumber("currentTime", (double)inputMap.get("currentTime").getValue());
-    SmartDashboard.putBoolean("hangerSwitch", (boolean)inputMap.get("hangerSwitch").getValue());
-    
+    SmartDashboard.putNumber("ShooterSpeed", (double) inputMap.get("shooterEncoderVelocity").getValue());
+    SmartDashboard.putNumber("ConveyorSpeed", (double) inputMap.get("conveyorEncoderVelocity").getValue());
+    SmartDashboard.putNumber("currentTime", (double) inputMap.get("currentTime").getValue());
+    SmartDashboard.putBoolean("hangerSwitch", (boolean) inputMap.get("hangerSwitch").getValue());
+
     this.conveyorLogger.log(inputMap, conveyorStateMachine);
   }
 

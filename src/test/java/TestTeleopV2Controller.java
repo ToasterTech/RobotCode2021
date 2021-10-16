@@ -16,6 +16,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
@@ -170,8 +171,9 @@ public class TestTeleopV2Controller {
     });
   }
 
+  @Ignore
   @Test
-  public void testTeleopControllerV1() {
+  public void testTeleopControllerV2() {
     TeleopControllerV2 teleopControllerV1 = new TeleopControllerV2(new EncoderSpeedCheck(200, 5700), new ConveyorStateMachine());
     RobotModel results = teleopControllerV1.run(this.inputMap);
     System.out.println(results);

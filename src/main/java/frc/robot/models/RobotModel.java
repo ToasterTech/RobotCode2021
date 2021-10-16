@@ -60,6 +60,7 @@ public class RobotModel extends Model {
       this.intakeModel = Optional.of(model);
       return this;
     }
+    
     public RobotModelBuilder buildLightModel(LightModel model) {
       this.lightModel = Optional.of(model);
       return this;

@@ -7,22 +7,23 @@
 
 package frc.robot.controllers;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+
 import frc.robot.controllers.ConveyorStateMachine.ConveyorStateMachineInput;
 import frc.robot.models.RobotModel;
 import frc.robot.subsystem.hanger.models.HangerSystemModel;
+import frc.robot.subsystem.intake.models.IntakeSystemModel;
+import frc.robot.subsystem.intake.models.IntakeSystemModel.IntakePosition;
+import frc.robot.subsystem.intake.models.IntakeSystemModel.IntakeState;
 import frc.robot.subsystem.light.models.LightSubsystemModel;
 import frc.robot.subsystem.shooter.models.ShooterSubsystemModel;
 import frc.robot.util.EncoderSpeedCheck;
 import frc.robot.util.InputContainer;
 import frc.robot.util.Toggle;
-import frc.robot.subsystem.intake.models.IntakeSystemModel;
-import frc.robot.subsystem.intake.models.IntakeSystemModel.IntakePosition;
-import frc.robot.subsystem.intake.models.IntakeSystemModel.IntakeState;
 
 import java.util.HashMap;
 import java.util.Objects;
 
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 /**
  * A Control the robot in teleop, based on intial testing.
@@ -46,12 +47,12 @@ public class TeleopControllerV2 extends RobotStateController {
   }
 
   @Override
-  public RobotModel run(HashMap<String, InputContainer<?>> inputMap) {    
+  public RobotModel run(HashMap<String, InputContainer<?>> inputMap) {
     ShooterSubsystemModel.ShooterState shooterState;
     IntakeState intakeState;
     LightSubsystemModel lightModel;
     // Manual Shooting
-    if ((boolean)inputMap.get("driverRightShoulder").getValue()) {
+    if ((boolean) inputMap.get("driverRightShoulder").getValue()) {
       shooterState = ShooterSubsystemModel.ShooterState.SHOOT_DEFAULT;
     } else {
       shooterState = ShooterSubsystemModel.ShooterState.STOPPED;
@@ -59,64 +60,58 @@ public class TeleopControllerV2 extends RobotStateController {
 
     // Hanger requires two buttons to be pushed to prevent accidental triggering.
     HangerSystemModel.HangerState hangerState;
-    if ((boolean)inputMap.get("operatorBaseRightUpperButton").getValue()) {
-      if ((boolean)inputMap.get("operatorBaseLeftUpperButton").getValue()) {
+    if ((boolean) inputMap.get("operatorBaseRightUpperButton").getValue()) {
+      if ((boolean) inputMap.get("operatorBaseLeftUpperButton").getValue()) {
         hangerState = HangerSystemModel.HangerState.RAISE;
-      } else if ((boolean)inputMap.get("operatorBaseLeftLowerButton").getValue()) {
+      } else if ((boolean) inputMap.get("operatorBaseLeftLowerButton").getValue()) {
         hangerState = HangerSystemModel.HangerState.LOWER;
       } else {
         hangerState = HangerSystemModel.HangerState.STOPPED;
-      }  
+      }
     } else {
       hangerState = HangerSystemModel.HangerState.STOPPED;
     }
 
-if(joystickToggle.run((boolean)inputMap.get("driverXButton").getValue())) { 
-  intakePosition = IntakePosition.DOWN; 
-  } else {
-    intakePosition = IntakePosition.UP;
-  }
+    if (joystickToggle.run((boolean) inputMap.get("driverXButton").getValue())) {
+      intakePosition = IntakePosition.DOWN;
+    } else {
+      intakePosition = IntakePosition.UP;
+    }
 
-  if((boolean)inputMap.get("driverLeftShoulder").getValue()) {
-    intakeState = IntakeState.INTAKE;
-  } else {
-    intakeState = IntakeState.STOPPED;
-  }
+    if ((boolean) inputMap.get("driverLeftShoulder").getValue()) {
+      intakeState = IntakeState.INTAKE;
+    } else {
+      intakeState = IntakeState.STOPPED;
+    }
 
-  SmartDashboard.putBoolean("ConveyorFrontTirggered", (double) inputMap.get("conveyorSonarFront").getValue() > 1.5);
-  SmartDashboard.putBoolean("ConveyorMiddleTirggered", (double) inputMap.get("conveyorSonarMiddle").getValue() > 1.5);
-  SmartDashboard.putBoolean("ConveyorTopTirggered", (double) inputMap.get("conveyorSonarTop").getValue() > 1.5);
-  SmartDashboard.putBoolean("ShooterAtSpeed", this.defaultTargetVelocity.isEncoderAtSpeed((double) inputMap.get("shooterEncoderVelocity").getValue()));
-  SmartDashboard.putBoolean("ShooterTriggered",  (boolean)inputMap.get("driverRightShoulder").getValue());
-  SmartDashboard.putNumber("BallCount", conveyorStateMachine.getBallCount());
+    SmartDashboard.putBoolean("ConveyorFrontTirggered", (double) inputMap.get("conveyorSonarFront").getValue() > 1.5);
+    SmartDashboard.putBoolean("ConveyorMiddleTirggered", (double) inputMap.get("conveyorSonarMiddle").getValue() > 1.5);
+    SmartDashboard.putBoolean("ConveyorTopTirggered", (double) inputMap.get("conveyorSonarTop").getValue() > 1.5);
+    SmartDashboard.putBoolean("ShooterAtSpeed",
+        this.defaultTargetVelocity.isEncoderAtSpeed((double) inputMap.get("shooterEncoderVelocity").getValue()));
+    SmartDashboard.putBoolean("ShooterTriggered", (boolean) inputMap.get("driverRightShoulder").getValue());
+    SmartDashboard.putNumber("BallCount", conveyorStateMachine.getBallCount());
 
-  SmartDashboard.putNumber("ConveyorFrontValue", (double)inputMap.get("conveyorSonarFront").getValue());
-  SmartDashboard.putNumber("ConveyorMiddleValue", (double)inputMap.get("conveyorSonarMiddle").getValue());
-  SmartDashboard.putNumber("ConveyorTopValue", (double)inputMap.get("conveyorSonarTop").getValue());
-    if (((double)inputMap.get("driverRightTrigger").getValue()) > 0) {
+    SmartDashboard.putNumber("ConveyorFrontValue", (double) inputMap.get("conveyorSonarFront").getValue());
+    SmartDashboard.putNumber("ConveyorMiddleValue", (double) inputMap.get("conveyorSonarMiddle").getValue());
+    SmartDashboard.putNumber("ConveyorTopValue", (double) inputMap.get("conveyorSonarTop").getValue());
+    if (((double) inputMap.get("driverRightTrigger").getValue()) > 0) {
       lightModel = new LightSubsystemModel(LightSubsystemModel.LightState.ON);
     } else {
       lightModel = new LightSubsystemModel(LightSubsystemModel.LightState.OFF);
     }
 
-    return new RobotModel.RobotModelBuilder()
-                .buildShooterModel(new ShooterSubsystemModel(shooterState))
-                .buildHangerModel(new HangerSystemModel(hangerState))
-                .buildDriveModel(this.tankDrive.run(inputMap).driveModel.get())
-                .buildConveyorModel(
-                  conveyorStateMachine.run(new ConveyorStateMachineInput(
-                    (double)inputMap.get("conveyorSonarFront").getValue() > 1.5,
-                    (double)inputMap.get("conveyorSonarMiddle").getValue() > 1.5,
-                    (double)inputMap.get("conveyorSonarTop").getValue() > 1.5,
-                    (double)inputMap.get("conveyorSonarIntakeCheck").getValue() > 1.5,
-                    this.defaultTargetVelocity.isEncoderAtSpeed((double) inputMap.get("shooterEncoderVelocity").getValue()),
-                    (boolean)inputMap.get("driverRightShoulder").getValue()
-                  )
-                )
-              )
-              .buildIntakeModel(new IntakeSystemModel(intakeState, intakePosition))
-              .buildLightModel(lightModel)
-              .build();
+    return new RobotModel.RobotModelBuilder().buildShooterModel(new ShooterSubsystemModel(shooterState))
+        .buildHangerModel(new HangerSystemModel(hangerState))
+        .buildDriveModel(this.tankDrive.run(inputMap).driveModel.get())
+        .buildConveyorModel(conveyorStateMachine
+            .run(new ConveyorStateMachineInput((double) inputMap.get("conveyorSonarFront").getValue() > 1.5,
+                (double) inputMap.get("conveyorSonarMiddle").getValue() > 1.5,
+                (double) inputMap.get("conveyorSonarTop").getValue() > 1.5,
+                (double) inputMap.get("conveyorSonarIntakeCheck").getValue() > 1.5,
+                this.defaultTargetVelocity.isEncoderAtSpeed((double) inputMap.get("shooterEncoderVelocity").getValue()),
+                (boolean) inputMap.get("driverRightShoulder").getValue())))
+        .buildIntakeModel(new IntakeSystemModel(intakeState, intakePosition)).buildLightModel(lightModel).build();
   }
 
   @Override

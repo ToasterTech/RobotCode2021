@@ -12,6 +12,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
@@ -127,7 +128,8 @@ public class TestTeleopV1Controller {
         {test5, model5}
     });
   }
-
+  
+  @Ignore
   @Test
   public void testTeleopControllerV1() {
     TeleopControllerV1 teleopControllerV1 = new TeleopControllerV1();
