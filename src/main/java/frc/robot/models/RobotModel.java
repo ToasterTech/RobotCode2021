@@ -26,7 +26,6 @@ public class RobotModel extends Model {
   public final Optional<HangerModel> hangerModel;
   public final Optional<LightModel> lightModel;
 
-
   public static class RobotModelBuilder {
     private Optional<ConveyorModel> conveyorModel = Optional.empty();
     private Optional<ShooterModel> shooterModel = Optional.empty();
@@ -53,6 +52,7 @@ public class RobotModel extends Model {
       this.hangerModel = Optional.of(model);
       return this;
     }
+
     public RobotModelBuilder buildLightModel(LightModel model) {
       this.lightModel = Optional.of(model);
       return this;
@@ -60,9 +60,9 @@ public class RobotModel extends Model {
 
     public RobotModel build() {
       return new RobotModel(this);
-    }  
+    }
   }
-  
+
   public RobotModel(RobotModelBuilder builder) {
     this.conveyorModel = builder.conveyorModel;
     this.shooterModel = builder.shooterModel;
@@ -76,20 +76,19 @@ public class RobotModel extends Model {
     if (!(other instanceof RobotModel)) {
       return false;
     }
-    RobotModel otherVal = (RobotModel)other;
-    return (this.conveyorModel.equals(otherVal.conveyorModel) 
-            && this.shooterModel.equals(otherVal.shooterModel) 
-            && this.driveModel.equals(otherVal.driveModel) 
-            && this.hangerModel.equals(otherVal.hangerModel));
+    RobotModel otherVal = (RobotModel) other;
+    return (this.conveyorModel.equals(otherVal.conveyorModel) && this.shooterModel.equals(otherVal.shooterModel)
+        && this.driveModel.equals(otherVal.driveModel) && this.hangerModel.equals(otherVal.hangerModel));
   }
-  
+
   @Override
   public int hashCode() {
     return Objects.hash(this.conveyorModel, this.shooterModel, this.driveModel, this.hangerModel);
   }
 
   public String toString() {
-    return "RobotModel(" + this.conveyorModel + "::" + this.shooterModel + "::" + this.driveModel + "::" + this.hangerModel + ")";
+    return "RobotModel(" + this.conveyorModel + "::" + this.shooterModel + "::" + this.driveModel + "::"
+        + this.hangerModel + ")";
   }
 
 }
