@@ -24,6 +24,7 @@ import frc.robot.devices.output.DeviceCANTalonFX;
 import frc.robot.devices.output.DeviceOutput;
 import frc.robot.devices.output.DevicePWMTalonSRX;
 import frc.robot.devices.output.DeviceSolenoid;
+import frc.robot.devices.output.SpikeRelay;
 import frc.robot.util.InputContainer;
 
 import java.util.Arrays;
@@ -63,6 +64,8 @@ public class HardwareInterface extends BaseHardwareInterface {
     this.outputMap.put("intakeMotor", new DevicePWMTalonSRX(0));
 
 
+    this.outputMap.put("lightRelay", new SpikeRelay(0, SpikeRelay.Direction.Forward));
+   
     // 
     DeviceCANSparkMax shooterMotor = new DeviceCANSparkMax(2, MotorType.kBrushless, Arrays.asList(
         new DeviceCANSparkMax(1, MotorType.kBrushless, true)

@@ -26,6 +26,9 @@ import frc.robot.subsystem.intake.IntakeSubsytem;
 import frc.robot.subsystem.intake.models.IntakeSystemModel;
 import frc.robot.subsystem.intake.models.IntakeSystemModel.IntakePosition;
 import frc.robot.subsystem.intake.models.IntakeSystemModel.IntakeState;
+
+import frc.robot.subsystem.light.LightSubsystem;
+import frc.robot.subsystem.light.models.LightSubsystemModel;
 import frc.robot.subsystem.shooter.ShooterSubsystem;
 import frc.robot.subsystem.shooter.models.ShooterSubsystemModel;
 import frc.robot.util.EncoderSpeedCheck;
@@ -50,6 +53,7 @@ public class Robot extends TimedRobot {
   private ConveyorSubsystem conveyorSubsystem;
   private HangerSubsystem hangerSubystem;
   private IntakeSubsytem intakeSubsytem;
+  private LightSubsystem lightSubsystem;
   private HardwareInterface hardwareInterface;
   private RobotStateController controller;
   private ConveyorStateMachine conveyorStateMachine;
@@ -65,6 +69,7 @@ public class Robot extends TimedRobot {
     this.conveyorSubsystem = new ConveyorSubsystem();
     this.hangerSubystem = new HangerSubsystem();
     this.intakeSubsytem = new IntakeSubsytem();
+    this.lightSubsystem = new LightSubsystem();
     this.hardwareInterface = new HardwareInterface();
     this.conveyorStateMachine = new ConveyorStateMachine();
     this.conveyorLogger = new ConveyorLogger("/home/lvuser/conveyor.log");
@@ -149,6 +154,8 @@ public class Robot extends TimedRobot {
     List<DeviceOutputCommand> driveMotorCommands = driveSubsystem.run(model.driveModel.orElse(new DifferentialDriveModel(0.0, 0.0)));
     List<DeviceOutputCommand> intakeCommands = intakeSubsytem.run(model.intakeModel.orElse(new IntakeSystemModel(IntakeState.STOPPED, IntakePosition.UP)));
 
+    List<DeviceOutputCommand> lightCommands = lightSubsystem.run(model.lightModel.orElse(new LightSubsystemModel(LightSubsystemModel.LightState.OFF)));
+
     hardwareInterface.run(
         //Don't worry about this code, I know it is confusing, but it does make sense
         Stream.of(
@@ -156,7 +163,8 @@ public class Robot extends TimedRobot {
             driveMotorCommands,
             shooterCommands, 
             intakeCommands,
-            conveyorCommands)
+            conveyorCommands,
+            lightCommands)
           .flatMap(Collection::stream)
           .collect(Collectors.toList())
     );

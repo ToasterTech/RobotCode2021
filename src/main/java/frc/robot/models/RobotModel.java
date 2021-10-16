@@ -11,6 +11,7 @@ import frc.robot.subsystem.conveyor.models.ConveyorModel;
 import frc.robot.subsystem.drive.models.DriveModel;
 import frc.robot.subsystem.hanger.models.HangerModel;
 import frc.robot.subsystem.intake.models.IntakeModel;
+import frc.robot.subsystem.light.models.LightModel;
 import frc.robot.subsystem.shooter.models.ShooterModel;
 
 import java.util.Objects;
@@ -25,6 +26,7 @@ public class RobotModel extends Model {
   public final Optional<DriveModel> driveModel;
   public final Optional<HangerModel> hangerModel;
   public final Optional<IntakeModel> intakeModel;
+  public final Optional<LightModel> lightModel;
 
   public static class RobotModelBuilder {
     private Optional<ConveyorModel> conveyorModel = Optional.empty();
@@ -32,6 +34,7 @@ public class RobotModel extends Model {
     private Optional<DriveModel> driveModel = Optional.empty();
     private Optional<HangerModel> hangerModel = Optional.empty();
     private Optional<IntakeModel> intakeModel = Optional.empty();
+    private Optional<LightModel> lightModel = Optional.empty();
 
     public RobotModelBuilder buildConveyorModel(ConveyorModel model) {
       this.conveyorModel = Optional.of(model);
@@ -57,18 +60,23 @@ public class RobotModel extends Model {
       this.intakeModel = Optional.of(model);
       return this;
     }
+    public RobotModelBuilder buildLightModel(LightModel model) {
+      this.lightModel = Optional.of(model);
+      return this;
+    }
 
     public RobotModel build() {
       return new RobotModel(this);
-    }  
+    }
   }
-  
+
   public RobotModel(RobotModelBuilder builder) {
     this.conveyorModel = builder.conveyorModel;
     this.shooterModel = builder.shooterModel;
     this.driveModel = builder.driveModel;
     this.hangerModel = builder.hangerModel;
     this.intakeModel = builder.intakeModel;
+    this.lightModel = builder.lightModel;
   }
 
   @Override
@@ -83,7 +91,7 @@ public class RobotModel extends Model {
             && this.intakeModel.equals(otherVal.intakeModel) 
             && this.hangerModel.equals(otherVal.hangerModel));
   }
-  
+
   @Override
   public int hashCode() {
     return Objects.hash(this.conveyorModel, this.shooterModel, this.driveModel, this.hangerModel, this.intakeModel);
@@ -91,6 +99,7 @@ public class RobotModel extends Model {
 
   public String toString() {
     return "RobotModel(" + this.conveyorModel + "::" + this.shooterModel + "::" + this.driveModel + "::" + this.hangerModel + "::" + this.intakeModel + ")";
+
   }
 
 }

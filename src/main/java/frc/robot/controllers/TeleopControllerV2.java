@@ -10,6 +10,7 @@ package frc.robot.controllers;
 import frc.robot.controllers.ConveyorStateMachine.ConveyorStateMachineInput;
 import frc.robot.models.RobotModel;
 import frc.robot.subsystem.hanger.models.HangerSystemModel;
+import frc.robot.subsystem.light.models.LightSubsystemModel;
 import frc.robot.subsystem.shooter.models.ShooterSubsystemModel;
 import frc.robot.util.EncoderSpeedCheck;
 import frc.robot.util.InputContainer;
@@ -48,6 +49,7 @@ public class TeleopControllerV2 extends RobotStateController {
   public RobotModel run(HashMap<String, InputContainer<?>> inputMap) {    
     ShooterSubsystemModel.ShooterState shooterState;
     IntakeState intakeState;
+    LightSubsystemModel lightModel;
     // Manual Shooting
     if ((boolean)inputMap.get("driverRightShoulder").getValue()) {
       shooterState = ShooterSubsystemModel.ShooterState.SHOOT_DEFAULT;
@@ -91,6 +93,11 @@ if(joystickToggle.run((boolean)inputMap.get("driverXButton").getValue())) {
   SmartDashboard.putNumber("ConveyorFrontValue", (double)inputMap.get("conveyorSonarFront").getValue());
   SmartDashboard.putNumber("ConveyorMiddleValue", (double)inputMap.get("conveyorSonarMiddle").getValue());
   SmartDashboard.putNumber("ConveyorTopValue", (double)inputMap.get("conveyorSonarTop").getValue());
+    if (((double)inputMap.get("driverRightTrigger").getValue()) > 0) {
+      lightModel = new LightSubsystemModel(LightSubsystemModel.LightState.ON);
+    } else {
+      lightModel = new LightSubsystemModel(LightSubsystemModel.LightState.OFF);
+    }
 
     return new RobotModel.RobotModelBuilder()
                 .buildShooterModel(new ShooterSubsystemModel(shooterState))
@@ -108,6 +115,7 @@ if(joystickToggle.run((boolean)inputMap.get("driverXButton").getValue())) {
                 )
               )
               .buildIntakeModel(new IntakeSystemModel(intakeState, intakePosition))
+              .buildLightModel(lightModel)
               .build();
   }
 
