@@ -9,6 +9,7 @@ package frc.robot.controllers;
 
 import frc.robot.models.RobotModel;
 import frc.robot.subsystem.hanger.models.HangerSystemModel;
+import frc.robot.subsystem.light.models.LightSubsystemModel;
 import frc.robot.subsystem.shooter.models.ShooterSubsystemModel;
 import frc.robot.util.EncoderSpeedCheck;
 import frc.robot.util.InputContainer;
@@ -35,6 +36,7 @@ public class TeleopControllerV2 extends RobotStateController {
   public RobotModel run(HashMap<String, InputContainer<?>> inputMap) {    
     RobotModel autoShooterModel;
     ShooterSubsystemModel.ShooterState shooterState;
+    LightSubsystemModel lightModel;
     // Auto Shooting
     if ((boolean)inputMap.get("driverLeftShoulder").getValue()) {
       autoShooterModel = autoShooerController.run(inputMap);
@@ -62,10 +64,17 @@ public class TeleopControllerV2 extends RobotStateController {
       hangerState = HangerSystemModel.HangerState.STOPPED;
     }
 
+    if (((double)inputMap.get("driverRightTrigger").getValue()) > 0) {
+      lightModel = new LightSubsystemModel(LightSubsystemModel.LightState.ON);
+    } else {
+      lightModel = new LightSubsystemModel(LightSubsystemModel.LightState.OFF);
+    }
+
     return new RobotModel.RobotModelBuilder()
                 .buildShooterModel(autoShooterModel.shooterModel.orElse(new ShooterSubsystemModel(shooterState)))
                 .buildHangerModel(new HangerSystemModel(hangerState))
                 .buildDriveModel(this.tankDrive.run(inputMap).driveModel.get())
+                .buildLightModel(lightModel)
                 .build();
   }
 
