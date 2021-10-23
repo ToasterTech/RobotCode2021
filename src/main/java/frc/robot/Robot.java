@@ -91,7 +91,7 @@ public class Robot extends TimedRobot {
 
   @Override
   public void autonomousInit() {
-    this.controller = new AutoModeController(new EncoderSpeedCheck(230, 5300));
+    this.controller = new AutoModeController(new EncoderSpeedCheck(230, 5300), this.conveyorStateMachine);
 
   }
 

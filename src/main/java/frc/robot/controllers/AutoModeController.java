@@ -8,7 +8,7 @@
 package frc.robot.controllers;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-
+import frc.robot.controllers.ConveyorStateMachine.ConveyorStateMachineInput;
 import frc.robot.models.RobotModel;
 import frc.robot.subsystem.drive.models.DifferentialDriveModel;
 import frc.robot.subsystem.shooter.models.ShooterSubsystemModel;
@@ -30,6 +30,7 @@ public class AutoModeController extends RobotStateController {
   private AutomodeState autoState;
   private Optional<Double> targetEndTime;
   private EncoderSpeedCheck encoderSpeedCheckAuto;
+  private ConveyorStateMachine conveyorStateMachine;
 
   private static final double WAIT_TIME = 0.0;
   private static final double SHOOT_TIME = 5.0 * 1000;
@@ -40,11 +41,12 @@ public class AutoModeController extends RobotStateController {
     WAIT_TO_SHOOT, SHOOT, DRIVE_BACK, STOP
   }
 
-  public AutoModeController(EncoderSpeedCheck encoderSpeedCheckAuto) {
+  public AutoModeController(EncoderSpeedCheck encoderSpeedCheckAuto, ConveyorStateMachine conveyorStateMachine) {
     this.tankDrive = new TankDrive("driverLeftAxisY", "driverRightAxisY");
     this.autoState = AutomodeState.WAIT_TO_SHOOT;
     this.targetEndTime = Optional.empty();
     this.encoderSpeedCheckAuto = encoderSpeedCheckAuto;
+    this.conveyorStateMachine = conveyorStateMachine;
   }
 
   private RobotModel waitToShoot(double currentTime) {
@@ -69,7 +71,15 @@ public class AutoModeController extends RobotStateController {
       this.autoState = AutomodeState.DRIVE_BACK;
       targetEndTime = Optional.empty();
     }
-    return new AutomaticShoot(this.encoderSpeedCheckAuto).run(inputMap);
+    return new RobotModel.RobotModelBuilder().buildShooterModel(new ShooterSubsystemModel(ShooterState.SHOOT_DEFAULT))
+      .buildConveyorModel(this.conveyorStateMachine
+          .run(new ConveyorStateMachineInput((double) inputMap.get("conveyorSonarFront").getValue() > 1.5,
+                (double) inputMap.get("conveyorSonarMiddle").getValue() > 1.5,
+                (double) inputMap.get("conveyorSonarTop").getValue() > 1.5,
+                (double) inputMap.get("conveyorSonarIntakeCheck").getValue() > 1.5,
+                this.encoderSpeedCheckAuto.isEncoderAtSpeed((double) inputMap.get("shooterEncoderVelocity").getValue()),
+                true)))
+      .build();
   }
 
   private RobotModel driveBack(double currentTime) {
