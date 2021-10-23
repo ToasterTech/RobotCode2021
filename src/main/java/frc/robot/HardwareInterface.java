@@ -16,6 +16,7 @@ import frc.robot.devices.commands.DeviceOutputCommand;
 import frc.robot.devices.input.CurrentTime;
 import frc.robot.devices.input.DeviceInput;
 import frc.robot.devices.input.LimitSwitch;
+import frc.robot.devices.input.UltrasonicSensor;
 import frc.robot.devices.input.gamepad.GamepadInput;
 import frc.robot.devices.input.gamepad.JoystickInput;
 import frc.robot.devices.output.DeviceCANSparkMax;
@@ -58,8 +59,10 @@ public class HardwareInterface extends BaseHardwareInterface {
     this.inputMap.put("hangerSwitch", new LimitSwitch(0));
 
 
-    this.outputMap.put("intakeStop", new DeviceSolenoid(2));
-    this.outputMap.put("intakeDrop", new DeviceSolenoid(0));
+    this.outputMap.put("intakeDropLeft", new DeviceSolenoid(0));
+    this.outputMap.put("intakeDropRight", new DeviceSolenoid(2));
+    this.outputMap.put("intakeMotor", new DevicePWMTalonSRX(0));
+
 
     this.outputMap.put("lightRelay", new SpikeRelay(0, SpikeRelay.Direction.Forward));
    
@@ -101,6 +104,11 @@ public class HardwareInterface extends BaseHardwareInterface {
     this.inputMap.put("operator", joystick);
     this.inputMap.putAll(joystick.getDeviceMap());
 
+
+    this.inputMap.put("conveyorSonarFront", new UltrasonicSensor(2));
+    this.inputMap.put("conveyorSonarMiddle", new UltrasonicSensor(1));
+    this.inputMap.put("conveyorSonarTop", new UltrasonicSensor(0));
+    this.inputMap.put("conveyorSonarIntakeCheck", new UltrasonicSensor(3));
   }
 
   /**

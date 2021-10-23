@@ -46,6 +46,7 @@ public class DeviceCANSparkMax extends MotorCAN {
   public DeviceCANSparkMax(int channel, MotorType motorType, boolean reverse) {
     this.controller = new CANSparkMax(channel, motorType);
     this.controller.setInverted(reverse);
+    this.reverse = reverse;
     this.encoder = controller.getEncoder(EncoderType.kHallSensor, 4096);
     this.controller.restoreFactoryDefaults();
   }

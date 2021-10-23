@@ -11,6 +11,7 @@ import frc.robot.devices.commands.DeviceOutputCommand;
 import frc.robot.devices.commands.GenericMotorCAN;
 import frc.robot.subsystem.RobotSubsystem;
 import frc.robot.subsystem.conveyor.models.ConveyorModel;
+import frc.robot.subsystem.conveyor.models.ConveyorSystemModel;
 
 import java.util.Arrays;
 import java.util.List;
@@ -21,9 +22,29 @@ import java.util.List;
 public class ConveyorSubsystem extends RobotSubsystem<ConveyorModel> {
   @Override
   public List<DeviceOutputCommand> run(ConveyorModel input) {
-    DeviceOutputCommand motorCommand;
-    motorCommand = new GenericMotorCAN("conveyorMotor", 0.0);
+    DeviceOutputCommand motorCommand = new GenericMotorCAN("conveyorMotor", 0.0);
+    if (input instanceof ConveyorSystemModel) {
+      ConveyorSystemModel conveyorSystemModel = (ConveyorSystemModel) input;
+      switch (conveyorSystemModel.conveyorState) {
+        case INTAKE_SLOW: 
+          motorCommand = new GenericMotorCAN("conveyorMotor", -0.2); 
+          break;
+        case INTAKE_FAST: 
+          motorCommand = new GenericMotorCAN("conveyorMotor", -1.0);
+          break;
+        case STOPPED: 
+          motorCommand = new GenericMotorCAN("conveyorMotor", 0.0); 
+          break;
+        case OUTAKE: 
+          motorCommand = new GenericMotorCAN("conveyorMotor", 0.3); 
+          break;
+        default:
+          motorCommand = new GenericMotorCAN("conveyorMotor", 0.0);
+          break;
+      }
+    }
     return Arrays.asList(
+      motorCommand
     ); 
   }
 }
