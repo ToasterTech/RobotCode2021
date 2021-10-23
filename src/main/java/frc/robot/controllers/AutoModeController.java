@@ -49,17 +49,23 @@ public class AutoModeController extends RobotStateController {
     this.conveyorStateMachine = conveyorStateMachine;
   }
 
-  private RobotModel waitToShoot(double currentTime) {
+  private RobotModel waitToShoot(double currentTime, HashMap<String, InputContainer<?>> inputMap) {
     if (!targetEndTime.isPresent()) {
       targetEndTime = Optional.of(currentTime + WAIT_TIME);
     }
-    if (currentTime > this.targetEndTime.get()) {
+    if (this.encoderSpeedCheckAuto.isEncoderAtSpeed((double) inputMap.get("shooterEncoderVelocity").getValue())) {
       this.autoState = AutomodeState.SHOOT;
       targetEndTime = Optional.empty();
     }
-    return new RobotModel.RobotModelBuilder()
-                          .buildShooterModel(new ShooterSubsystemModel(ShooterState.SHOOT_DEFAULT))
-                          .build();
+    return new RobotModel.RobotModelBuilder().buildShooterModel(new ShooterSubsystemModel(ShooterState.SHOOT_DEFAULT))
+    .buildConveyorModel(this.conveyorStateMachine
+        .run(new ConveyorStateMachineInput((double) inputMap.get("conveyorSonarFront").getValue() > 1.5,
+              (double) inputMap.get("conveyorSonarMiddle").getValue() > 1.5,
+              (double) inputMap.get("conveyorSonarTop").getValue() > 1.5,
+              (double) inputMap.get("conveyorSonarIntakeCheck").getValue() > 1.5,
+              this.encoderSpeedCheckAuto.isEncoderAtSpeed((double) inputMap.get("shooterEncoderVelocity").getValue()),
+              false)))
+    .build();
   }
 
   private RobotModel shoot(double currentTime, HashMap<String, InputContainer<?>> inputMap) {
@@ -69,6 +75,7 @@ public class AutoModeController extends RobotStateController {
     SmartDashboard.putNumber("targetTime", (double)targetEndTime.get());
     if (currentTime > this.targetEndTime.get()) {
       this.autoState = AutomodeState.DRIVE_BACK;
+      // this.autoState = AutomodeState.STOP;
       targetEndTime = Optional.empty();
     }
     return new RobotModel.RobotModelBuilder().buildShooterModel(new ShooterSubsystemModel(ShooterState.SHOOT_DEFAULT))
@@ -95,11 +102,22 @@ public class AutoModeController extends RobotStateController {
                           .build();
   }
 
-
   @Override
+
   public RobotModel run(HashMap<String, InputContainer<?>> inputMap) {
+    SmartDashboard.putBoolean("ConveyorFrontTirggered", (double) inputMap.get("conveyorSonarFront").getValue() > 1.5);
+    SmartDashboard.putBoolean("ConveyorMiddleTirggered", (double) inputMap.get("conveyorSonarMiddle").getValue() > 1.5);
+    SmartDashboard.putBoolean("ConveyorTopTirggered", (double) inputMap.get("conveyorSonarTop").getValue() > 1.5);
+    SmartDashboard.putBoolean("ShooterAtSpeed",
+        this.encoderSpeedCheckAuto.isEncoderAtSpeed((double) inputMap.get("shooterEncoderVelocity").getValue()));
+    SmartDashboard.putBoolean("ShooterTriggered", (boolean) inputMap.get("driverRightShoulder").getValue());
+    SmartDashboard.putNumber("BallCount", conveyorStateMachine.getBallCount());
+
+    SmartDashboard.putNumber("ConveyorFrontValue", (double) inputMap.get("conveyorSonarFront").getValue());
+    SmartDashboard.putNumber("ConveyorMiddleValue", (double) inputMap.get("conveyorSonarMiddle").getValue());
+    SmartDashboard.putNumber("ConveyorTopValue", (double) inputMap.get("conveyorSonarTop").getValue());
     switch (this.autoState) {
-      case WAIT_TO_SHOOT: return this.waitToShoot((double) inputMap.get("currentTime").getValue());
+      case WAIT_TO_SHOOT: return this.waitToShoot((double) inputMap.get("currentTime").getValue(), inputMap);
       case SHOOT: return this.shoot((double) inputMap.get("currentTime").getValue(), inputMap);
       case DRIVE_BACK: return this.driveBack((double) inputMap.get("currentTime").getValue());
       case STOP: return new RobotModel.RobotModelBuilder().buildDriveModel(new DifferentialDriveModel(0,0)).build();
